@@ -14,8 +14,6 @@ return new class extends Migration
         Schema::create('chats', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('profile_id')->index()->constrained('profiles');
-            $table->text('title')->index();
         });
     }
 

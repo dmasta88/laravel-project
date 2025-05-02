@@ -37,7 +37,6 @@ class DatabaseSeeder extends Seeder
             CommentSeeder::class,
             ChatSeeder::class,
             MessageSeeder::class,
-            ArticleSeeder::class
         ]);
     }
 }

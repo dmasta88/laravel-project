@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::table('roles', function (Blueprint $table) {
+            $table->dropColumn('description');
+            $table->dropColumn('max');
         });
     }
 
@@ -22,6 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('roles');
+        Schema::table('roles', function (Blueprint $table) {
+            $table->string('description')->unique()->index();
+            $table->integer('max')->unique()->index();
+        });
     }
 };

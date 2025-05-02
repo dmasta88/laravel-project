@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('post_profile_likes', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('post_id')->constrained('posts')->onDelete('cascade');
+        Schema::table('likeables', function (Blueprint $table) {
+            $table->morphs('likeable');
             $table->foreignId('profile_id')->constrained('profiles')->onDelete('cascade');
-            $table->unique(['post_id', 'profile_id']);
-            $table->timestamps();
         });
     }
 
@@ -25,6 +22,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('likes');
+        Schema::table('likeables', function (Blueprint $table) {
+            $table->dropMorphs('likeable');
+            $table->dropForeign(['profile_id']);
+            $table->dropColumn('profile_id');
+        });
     }
 };

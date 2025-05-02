@@ -13,10 +13,6 @@ return new class extends Migration
     {
         Schema::create('likeables', function (Blueprint $table) {
             $table->id();
-            //$table->foreignId('post_id')->constrained('posts')->onDelete('cascade');
-            $table->morphs('likeable');
-            $table->foreignId('profile_id')->constrained('profiles')->onDelete('cascade');
-            //$table->unique(['post_id', 'profile_id']);
             $table->timestamps();
         });
     }

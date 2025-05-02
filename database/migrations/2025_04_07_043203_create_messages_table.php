@@ -13,10 +13,6 @@ return new class extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->text('content')->index();
-            $table->foreignId('profile_id')->index()->constrained('profiles');
-            $table->foreignId('chat_id')->index()->constrained('chats');
-            $table->dateTime('published_at');
             $table->timestamps();
         });
     }

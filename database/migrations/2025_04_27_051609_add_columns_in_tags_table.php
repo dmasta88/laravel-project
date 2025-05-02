@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('articles', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-            $table->text('title')->unique();
-            $table->text('content');
-            $table->foreignId('profile_id')->index()->constrained('profiles');
+        Schema::table('tags', function (Blueprint $table) {
+            $table->string('title');
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('articles');
+        Schema::table('tags', function (Blueprint $table) {
+            $table->dropColumn('title');
+        });
     }
 };

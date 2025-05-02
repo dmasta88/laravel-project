@@ -36,8 +36,12 @@ class GoCommand extends Command
      */
     public function handle()
     {
-        // $category = Category::first();
-        // dump($category->posts);
+        $category = Category::withTrashed()->find(1);
+        //dd($category->restore());
+        dd($category->delete());
+        dump($category->title);
+        //dd($category->forceDelete());
+
 
         // $post = Post::first();
         // dump($post->id);
@@ -68,9 +72,11 @@ class GoCommand extends Command
         // );
 
         //dd($category->comment);
-        $profile = Profile::first();
-        dump($profile->likedPosts->pluck('id'));
-        dd($profile->likedArticles->pluck('id'));
+
+        // $profile = Profile::first();
+        // dump($profile->likedPosts->pluck('id'));
+        // dd($profile->likedArticles->pluck('id'));
+
         // dd($profile->user);
         // // //dump($profile->likedPosts);
         // // //dump($profile->repostedPosts);

@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('post_profile_reposts', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('post_id')->constrained('posts')->cascadeOnDelete();
-            $table->foreignId('profile_id')->constrained('profiles')->cascadeOnDelete();
-            $table->timestamps();
+        Schema::table('posts', function (Blueprint $table) {
+            $table->foreignId('profile_id')->index()->constrained('profiles');
         });
     }
 
@@ -24,6 +21,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reposts');
+        Schema::table('posts', function (Blueprint $table) {
+            $table->dropForeign(['profile_id']);
+            $table->dropColumn('profile_id');
+        });
     }
 };
