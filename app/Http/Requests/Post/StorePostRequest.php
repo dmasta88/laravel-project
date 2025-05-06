@@ -21,6 +21,7 @@ class StorePostRequest extends FormRequest
             'profile_id' => 'required|integer|',
             'published_at' => 'nullable|date_format:Y-m-d',
             'category_id' => 'required|integer|',
+            'views' => 'nullable|integer',
             'is_active' => 'required|boolean'
         ];
     }
