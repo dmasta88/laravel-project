@@ -23,8 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('roles', function (Blueprint $table) {
-            $table->string('description')->unique()->index();
-            $table->integer('max')->unique()->index();
+            $table->string('description')->unique();
+            $table->integer('max')->unique();
         });
     }
 };
