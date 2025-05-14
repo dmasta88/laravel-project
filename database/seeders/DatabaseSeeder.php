@@ -23,13 +23,6 @@ class DatabaseSeeder extends Seeder
         // ]);
         $user = User::firstOrCreate(['name' => "admin"], ['email' => 'tweens@inbox.ru', 'password' => Hash::make(123123)]);
         //$user->profile()->create();
-        Profile::firstOrCreate(['user_id' => $user->id], [
-            'second_name' => 'Alex Admin',
-            'third_name' => 'Andreevich',
-            'avatar' => fake()->imageUrl(),
-            'city' => fake()->city(),
-            'login' => 'alex777',
-        ]);
         $this->call([
             CategorySeeder::class,
             TagSeeder::class,
