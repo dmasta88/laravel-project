@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('roles', function (Blueprint $table) {
-            $table->dropColumn('description');
-            $table->dropColumn('max');
+        Schema::create('logs', function (Blueprint $table) {
+            $table->id();
+            $table->string('model');
+            $table->string('event');
+            $table->jsonb('old_attributes')->nullable();
+            $table->jsonb('new_attributes')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -22,9 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('roles', function (Blueprint $table) {
-            $table->string('description')->unique();
-            $table->integer('max')->unique();
-        });
+        Schema::dropIfExists('logs');
     }
 };
