@@ -2,14 +2,23 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Traits\HasLog;
+use App\Observers\PostObserver;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+
+#[ObservedBy(PostObserver::class)]
 
 class Post extends Model
 {
     use HasFactory;
+    use SoftDeletes;
+    use HasLog;
     protected $guarded = [];
+
     public function category()
     {
         return $this->belongsTo(Category::class);
