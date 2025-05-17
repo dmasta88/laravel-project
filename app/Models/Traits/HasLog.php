@@ -15,8 +15,8 @@ trait HasLog
             $data = [
                 'model' => class_basename($model),
                 'event' => 'updated',
-                'old_attributes' => $model->log_old_deleting,
-                'new_attributes' => null
+                'old_attributes' => $model->getOriginal(),
+                'new_attributes' => $model->getDirty()
             ];
             Log::create($data);
         });
