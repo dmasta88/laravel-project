@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Exceptions\PostException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Post\StorePostRequest;
 use App\Http\Requests\Post\UpdatePostRequest;
@@ -26,14 +27,18 @@ class PostController extends Controller
     {
         $data = $request->validated();
         $post = PostService::store($data);
+
         return PostResource::make($post)->resolve();
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Post $post)
+    public function show($id)
     {
+        $post = Post::find($id);
+        PostException::ifPostExist($post);
+        PostException::ifPostNotExist($post);
         return PostResource::make($post)->resolve();
     }
 
