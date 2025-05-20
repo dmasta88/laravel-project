@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('roles', function (Blueprint $table) {
-            $table->dropColumn('description');
-            $table->dropColumn('max');
+        Schema::create('videos', function (Blueprint $table) {
+            $table->id();
+            $table->text('url');
+            $table->timestamps();
         });
     }
 
@@ -22,9 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('roles', function (Blueprint $table) {
-            $table->string('description')->unique();
-            $table->integer('max')->unique();
-        });
+        Schema::dropIfExists('videos');
     }
 };
