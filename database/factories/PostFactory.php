@@ -25,7 +25,8 @@ class PostFactory extends Factory
             'category_id' => Category::inRandomOrder()->first()->id,
             'profile_id' => Profile::inRandomOrder()->first()->id,
             'published_at' => fake()->dateTime(),
-            'is_active' => fake()->boolean()
+            'is_active' => fake()->boolean(),
+            'views' => fake()->numberBetween(10, 1000)
         ];
     }
 }

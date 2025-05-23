@@ -17,8 +17,10 @@ class CommentResource extends JsonResource
         return [
             'id' => $this->id,
             'profile_id' => $this->profile_id,
-            'post_id' => $this->profile_id,
+            'post_id' => $this->commentable->id,
             'content' => $this->content,
+            'published_at' => $this->published_at,
+            'category_title' => $this->category_title
         ];
     }
 }
