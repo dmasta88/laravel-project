@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Profile;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Profile\IndexProfileRequest;
 use App\Http\Requests\Profile\StoreProfileRequest;
 use App\Http\Requests\Profile\UpdateProfileRequest;
 use App\Http\Requests\Store\UpdateRepostRequest;
@@ -13,9 +14,11 @@ use App\Services\ProfileService;
 
 class ProfileController extends Controller
 {
-    public function index()
+    public function index(IndexProfileRequest $request)
     {
-        return ProfileResource::collection(Profile::all())->resolve();
+        $data = $request->validated();
+        $profiles = Profile::filter($data)->get();
+        return ProfileResource::collection($profiles)->resolve();
     }
     public function store(StoreProfileRequest $request)
     {

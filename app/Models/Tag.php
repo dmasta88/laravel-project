@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasFilter;
 use App\Models\Traits\HasLog;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,6 +14,7 @@ class Tag extends Model
     use HasFactory;
     use HasLog;
     use SoftDeletes;
+    use HasFilter;
     public function posts()
     {
         return $this->belongsToMany(Post::class);

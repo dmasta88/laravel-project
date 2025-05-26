@@ -17,6 +17,7 @@ class ChatResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
+            'profile_id' => $this->profile->id
         ];
     }
 }

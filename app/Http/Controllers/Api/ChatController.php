@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Chat;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Chat\IndexChatRequest;
 use App\Http\Requests\Chat\StoreChatRequest;
 use App\Http\Requests\Chat\UpdateChatRequest;
 use App\Http\Resources\Chat\ChatResource;
@@ -12,9 +13,12 @@ use App\Services\ChatService;
 
 class ChatController extends Controller
 {
-    public function index()
+    public function index(IndexChatRequest $request)
+
     {
-        return ChatResource::collection(Chat::all())->resolve();
+        $data = $request->validated();
+        $chats = Chat::filter($data)->get();
+        return ChatResource::collection($chats)->resolve();
     }
     public function store(StoreChatRequest $request)
     {

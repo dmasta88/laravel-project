@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\PostException;
 use App\Http\Controllers\Controller;
+use App\Http\Filters\PostFilter;
+use App\Http\Requests\Post\IndexPostRequest;
 use App\Http\Requests\Post\StorePostRequest;
 use App\Http\Requests\Post\UpdatePostRequest;
 use App\Http\Resources\Post\PostResource;
@@ -15,9 +17,12 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(IndexPostRequest $request)
     {
-        return PostResource::collection(Post::all())->resolve();
+        $data = $request->validated();
+        $posts = Post::filter($data)->get();
+        //$posts = $builder->get();
+        return PostResource::collection($posts)->resolve();
     }
 
     /**
@@ -37,8 +42,8 @@ class PostController extends Controller
     public function show($id)
     {
         $post = Post::find($id);
-        PostException::ifPostExist($post);
-        PostException::ifPostNotExist($post);
+        // PostException::ifPostExist($post);
+        // PostException::ifPostNotExist($post);
         return PostResource::make($post)->resolve();
     }
 
