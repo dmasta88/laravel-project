@@ -29,10 +29,10 @@ Route::group(['middleware' => ['api'], 'prefix' => 'auth'], function () {
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
 });
-//Route::group(['middleware' => ['api', isPermissionMiddleware::class]], function () {
-Route::apiResource('videos', VideoController::class);
-Route::apiResource('posts', PostController::class);
-//});
+Route::group(['middleware' => ['api', isPermissionMiddleware::class]], function () {
+    Route::apiResource('videos', VideoController::class);
+    Route::apiResource('posts', PostController::class);
+});
 
 
 //Route::apiResource('posts', PostController::class);

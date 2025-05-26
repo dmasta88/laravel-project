@@ -12,8 +12,10 @@ abstract class AbstractFilter
     {
         foreach ($this->keys as $key) {
             if (isset($data[$key])) {
-                $nameClass = Str::camel($key);
-                $this->$nameClass($builder, $data[$key]);
+                $nameMethod = Str::camel($key);
+                if (method_exists($this, $nameMethod)) {
+                    $this->$nameMethod($builder, $data[$key]);
+                }
             }
         }
         return $builder;
