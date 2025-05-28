@@ -20,6 +20,9 @@ class isPermissionMiddleware
         $routeName = $request->route()->getName();
         [$resource, $action] = explode('.', $routeName);
 
+        if ($roles->contains('title', 'admin')) {
+            return $next($request);
+        }
         if (!$roles->contains('title', 'moderator_' . $resource)) {
             return response(['message' => "You are not {$resource} moderator"], Response::HTTP_FORBIDDEN);
         }
