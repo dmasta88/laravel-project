@@ -17,7 +17,6 @@ use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Middleware\isPermissionMiddleware;
-use App\Http\Middleware\isVideoModeratorMiddleware;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
