@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Category;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Category\IndexCategoryRequest;
 use App\Http\Resources\Category\CategoryResource;
 use App\Http\Requests\Category\StoreCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
@@ -11,9 +12,11 @@ use App\Services\CategoryService;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(IndexCategoryRequest $request)
     {
-        return CategoryResource::collection(Category::all())->resolve();
+        $data = $request->validated();
+        $categories = Category::filter($data)->get();
+        return CategoryResource::collection($categories)->resolve();
     }
     public function store(StoreCategoryRequest $request)
     {

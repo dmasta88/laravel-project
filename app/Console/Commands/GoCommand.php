@@ -47,12 +47,6 @@ class GoCommand extends Command
         // foreach ($events as $event) {
         //     dump($event);
         // }
-
-        // $category = Category::withTrashed()->find(1);
-        // //dd($category->restore());
-        // dd($category->delete());
-        // dump($category->title);
-        //dd($category->forceDelete());
         //dd($posts);
         //$post = Post::find(1);
         //Log::channel('post')->info('post created {post}', ['post' => $post->id]);

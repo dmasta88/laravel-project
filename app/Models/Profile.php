@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasFilter;
 use Illuminate\Database\Eloquent\Model;
 
 class Profile extends Model
 {
+    use HasFilter;
     protected $guarded = [];
     public function user()
     {

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasFilter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,6 +12,7 @@ class Comment extends Model
 {
     protected $guarded = [];
     use HasFactory;
+    use HasFilter;
     public function profile()
     {
         return $this->belongsTo(Profile::class);
@@ -27,7 +29,7 @@ class Comment extends Model
 
     public function category()
     {
-        return $this->post->category();
+        return $this->commentable->category();
     }
     public function tags()
     {

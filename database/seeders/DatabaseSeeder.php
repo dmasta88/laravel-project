@@ -27,6 +27,9 @@ class DatabaseSeeder extends Seeder
 
         $permissions = [
             [
+                'title' => 'index',
+            ],
+            [
                 'title' => 'create',
             ],
             [

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasFilter;
 use App\Models\Traits\HasLog;
 use App\Models\Traits\HasLogFile;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +17,7 @@ class Category extends Model
     use SoftDeletes;
     use HasLog;
     use HasLogFile;
+    use HasFilter;
     public function posts()
     {
         return $this->hasMany(Post::class);
