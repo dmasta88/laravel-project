@@ -33,7 +33,7 @@ trait HasLogFile
             //Log::create($data);
         });
         static::creating(function ($model) {
-            StartLogEvent::dispatch($model);
+            //StartLogEvent::dispatch($model);
         });
         static::created(function ($model) {
             //Log::create($data);
@@ -43,7 +43,7 @@ trait HasLogFile
                 'path' => storage_path("logs/{$modelName}/created.log"),
             ]);
             Log::stack([$channel])->info("Created {$modelName}: ", [$modelName => $model]);
-            EndLogEvent::dispatch($model);
+            //EndLogEvent::dispatch($model);
         });
     }
 }

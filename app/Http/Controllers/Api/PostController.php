@@ -32,7 +32,6 @@ class PostController extends Controller
     {
         $data = $request->validated();
         $post = PostService::store($data);
-
         return PostResource::make($post)->resolve();
     }
 

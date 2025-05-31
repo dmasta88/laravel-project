@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Middleware\DbListener;
 use App\Http\Middleware\isPermissionMiddleware;
 
 Route::get('/user', function (Request $request) {
@@ -28,7 +29,7 @@ Route::group(['middleware' => ['api'], 'prefix' => 'auth'], function () {
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
 });
-Route::group(['middleware' => ['api', isPermissionMiddleware::class]], function () {
+Route::group(['middleware' => ['api', /*isPermissionMiddleware::class,*/ DbListener::class]], function () {
     Route::apiResource('videos', VideoController::class);
     Route::apiResource('posts', PostController::class);
 });

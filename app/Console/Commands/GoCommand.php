@@ -40,14 +40,16 @@ class GoCommand extends Command
      */
     public function handle()
     {
-
-        // $category = Category::withTrashed()->find(1);
-        // //dd($category->restore());
-        // dd($category->delete());
-        // dump($category->title);
-        //dd($category->forceDelete());
-        // $post = Post::find(1);
-        // Log::channel('post')->info('post created {post}', ['post' => $post->id]);
+        $user = User::find(1);
+        $requests = $user->requests;
+        dd($requests);
+        // $events = $user->logEvents;
+        // foreach ($events as $event) {
+        //     dump($event);
+        // }
+        //dd($posts);
+        //$post = Post::find(1);
+        //Log::channel('post')->info('post created {post}', ['post' => $post->id]);
         // $post = Post::find(2);
 
         // StoredPostEvent::dispatch($post);
