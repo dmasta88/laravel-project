@@ -15,6 +15,7 @@ use App\Models\Profile;
 use App\Models\Category;
 use Illuminate\Console\Command;
 use App\Events\Log\StartLogEvent;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Events\Post\StoredPostEvent;
 
@@ -39,13 +40,22 @@ class GoCommand extends Command
      */
     public function handle()
     {
+        $user = User::find(1);
+        $requests = $user->requests;
+        dd($requests);
+        // $events = $user->logEvents;
+        // foreach ($events as $event) {
+        //     dump($event);
+        // }
+
         // $category = Category::withTrashed()->find(1);
         // //dd($category->restore());
         // dd($category->delete());
         // dump($category->title);
         //dd($category->forceDelete());
-        $post = Post::find(1);
-        Log::channel('post')->info('post created {post}', ['post' => $post->id]);
+        //dd($posts);
+        //$post = Post::find(1);
+        //Log::channel('post')->info('post created {post}', ['post' => $post->id]);
         // $post = Post::find(2);
 
         // StoredPostEvent::dispatch($post);

@@ -11,14 +11,14 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
-#[ObservedBy(PostObserver::class)]
+//#[ObservedBy(PostObserver::class)]
 
 class Post extends Model
 {
     use HasFactory;
     use SoftDeletes;
-    use HasLog;
-    use HasLogFile;
+    //use HasLog;
+    //use HasLogFile;
     protected $guarded = [];
 
     public function category()

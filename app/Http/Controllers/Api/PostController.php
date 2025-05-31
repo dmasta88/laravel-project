@@ -27,7 +27,6 @@ class PostController extends Controller
     {
         $data = $request->validated();
         $post = PostService::store($data);
-
         return PostResource::make($post)->resolve();
     }
 
@@ -37,8 +36,8 @@ class PostController extends Controller
     public function show($id)
     {
         $post = Post::find($id);
-        PostException::ifPostExist($post);
-        PostException::ifPostNotExist($post);
+        // PostException::ifPostExist($post);
+        // PostException::ifPostNotExist($post);
         return PostResource::make($post)->resolve();
     }
 
