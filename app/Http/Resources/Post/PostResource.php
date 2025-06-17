@@ -23,6 +23,8 @@ class PostResource extends JsonResource
             'content' => $this->content,
             'is_active' => $this->is_active,
             'views' => $this->views,
+            'image_url' => $this->ImageUrl,
+            'profile_id' => $this->profile_id
         ];
     }
 }

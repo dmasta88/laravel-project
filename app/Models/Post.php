@@ -7,6 +7,7 @@ use App\Observers\PostObserver;
 use App\Models\Traits\HasFilter;
 use App\Models\Traits\HasLogFile;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -30,9 +31,10 @@ class Post extends Model
     {
         return $this->belongsTo(Profile::class);
     }
-    public function image()
+    public function images()
     {
-        return $this->morphOne(Image::class, 'imageable');
+        return $this->hasMany(Image::class);
+        //return $this->morphOne(Image::class, 'imageable');
     }
     // public function whoLiked()
     // {
@@ -61,5 +63,16 @@ class Post extends Model
     public function comments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'commentable');
+    }
+    public function getImageUrlAttribute()
+    {
+        //$path = $this->images->image_path;
+        //dd($this->images);
+        $imageUrls = [];
+        foreach ($this->images as $image) {
+            $imageUrls[] = Storage::disk('public')->url($image->image_path);
+        }
+        //dd($imageUrls);
+        return $imageUrls;
     }
 }

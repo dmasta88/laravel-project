@@ -12,4 +12,8 @@ class Image extends Model
     {
         return $this->morphTo();
     }
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
+    }
 }
