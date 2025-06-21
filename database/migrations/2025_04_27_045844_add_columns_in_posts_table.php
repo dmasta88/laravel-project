@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('category_id')->index()->nullable()->constrained('categories');
             $table->foreignId('parent_id')->nullable()->constrained('posts');
             $table->unsignedBigInteger('views')->nullable();
-            $table->dateTime('published_at')->nullable();
+            $table->date('published_at')->nullable();
             $table->boolean('is_active')->nullable()->default(true);
         });
     }

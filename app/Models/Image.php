@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Image extends Model
@@ -11,5 +12,13 @@ class Image extends Model
     public function imageable(): MorphTo
     {
         return $this->morphTo();
+    }
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
+    }
+    public function getUrlAttribute()
+    {
+        return Storage::disk('public')->url($this->image_path);
     }
 }
