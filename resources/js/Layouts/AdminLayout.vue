@@ -1,6 +1,6 @@
 <template>
   <section>
-    <header class="flex items-center justify-center h-32 bg-gray-200">
+    <header class="flex items-center justify-center h-20 bg-gray-200">
       <div class="text-center">header</div>
     </header>
   </section>
@@ -22,7 +22,7 @@
       Roles
       </Link>
     </aside>
-    <article class="p-4 bg-gray-100 w-3/4">
+    <article class="p-2 bg-gray-100 w-3/4">
       <slot />
     </article>
   </section>

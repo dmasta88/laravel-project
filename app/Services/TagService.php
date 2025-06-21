@@ -23,4 +23,12 @@ class TagService
         $tag->update($data);
         return $tag;
     }
+    public static function storeBatch(array $data): array
+    {
+        $tags = [];
+        foreach ($data as $tag) {
+            $tags[] = Tag::firstOrCreate(['title' => $tag]);
+        }
+        return $tags;
+    }
 }

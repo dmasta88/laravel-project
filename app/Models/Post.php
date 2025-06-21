@@ -33,6 +33,7 @@ class Post extends Model
     }
     public function images()
     {
+
         return $this->hasMany(Image::class);
         //return $this->morphOne(Image::class, 'imageable');
     }
@@ -64,15 +65,8 @@ class Post extends Model
     {
         return $this->morphMany(Comment::class, 'commentable');
     }
-    public function getImageUrlAttribute()
+    public function getImageUrlsAttribute()
     {
-        //$path = $this->images->image_path;
-        //dd($this->images);
-        $imageUrls = [];
-        foreach ($this->images as $image) {
-            $imageUrls[] = Storage::disk('public')->url($image->image_path);
-        }
-        //dd($imageUrls);
-        return $imageUrls;
+        return $this->images->pluck('url')->toArray();
     }
 }

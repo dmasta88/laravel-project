@@ -37,7 +37,7 @@ class ChatController extends Controller
     }
     public function destroy(Chat $chat)
     {
-        $chat->delete($chat);
+        $chat->delete();
         return response()->json(['message' => 'Chat deleted']);
     }
 }

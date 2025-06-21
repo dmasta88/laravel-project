@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="flex justify-between p-4">
+    <div class="flex justify-between p-2">
       <h1 class="text-2xl">
         Admin Index
       </h1>
       <!-- <a href="#" class="p-4 bg-blue-800 text-white">Create post</a> -->
-      <Link :href="route('admin.posts.create')" class="p-4 bg-blue-800 text-white">Create post</Link>
+      <Link :href="route('admin.posts.create')" class="px-4 py-2 bg-blue-800 text-white">Create post</Link>
     </div>
     <table class="border-collapse border border-gray-200 table-auto w-full text-sm">
       <thead class="bg-gray-100 dark:bg-slate-800">
@@ -33,6 +33,7 @@
           </td>
           <td
             class="text-center border-b border-slate-100 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400">
+            <Link :href="route('admin.posts.edit', post.id)">Edit</Link>
           </td>
         </tr>
       </tbody>

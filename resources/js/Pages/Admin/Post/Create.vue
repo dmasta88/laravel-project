@@ -4,13 +4,23 @@
       Create post
     </h1>
     <div class="p-2">
-      <input v-model="posts.title" type="text" name="title" placeholder="Title" class="w-1/3">
+      <input v-model="entries.post.title" type="text" name="title" placeholder="Title" class="w-1/3">
     </div>
     <div class="p-2">
-      <textarea v-model="posts.content" type="text" name="content" placeholder="Content" class="w-1/3"></textarea>
+      <textarea v-model="entries.post.content" type="text" name="content" placeholder="Content"
+        class="w-1/3"></textarea>
+    </div>
+    <div class="p-2">
+      <label>Published at:</label>
+    </div>
+    <div class="p-2">
+      <input v-model="entries.post.published_at" type="datetime-local" name="date" placeholder="Date" class="w-1/3">
+    </div>
+    <div class="p-2">
+      <input v-model="entries.tags" type="text" name="text" placeholder="Tags" class="w-1/3">
     </div>
     <div class="p-2 block">
-      <select name="categories" v-model="posts.category_id" id="categories" class="w-1/3">
+      <select name="categories" v-model="entries.post.category_id" id="categories" class="w-1/3">
         <option value="null" disabled>Select category</option>
         <option v-for="category in categories" :value="category.id">{{ category.title }}</option>
       </select>
@@ -47,40 +57,44 @@ export default defineComponent({
     createPost() {
 
       const formData = new FormData();
-      for (const key in this.posts) {
-        if (key === 'images' && this.posts.images.length) {
-          for (let i = 0; i < this.posts.images.length; i++) {
-            formData.append('images[]', this.posts.images[i]);
+      for (const key in this.entries.post) {
+        if (key === 'images' && this.entries.post.images.length) {
+          for (let i = 0; i < this.entries.post.images.length; i++) {
+            formData.append('images[]', this.entries.post.images[i]);
           }
         } else {
-          formData.append(key, this.posts[key]);
+          formData.append(key, this.entries.posts[key]);
         }
       }
       axios.post(route('admin.posts.store'), formData)
-        // axios.post(route('admin.posts.store'), this.posts, {
+        // axios.post(route('admin.posts.store'), this.entries, {
         //   headers: {
         //     'Content-Type': 'multipart/form-data'
         //   }
         // })
         .then(res => {
           console.log(res)
-          this.posts = { category_id: null, }
+          this.entries.post = { category_id: null, is_active: 1 }
+          this.entries.tags = '';
           this.$refs.input_images.value = null
         })
     },
     setImage(e) {
-      this.posts.images = e.target.files;
-      console.log(this.posts.images);
+      this.entries.post.images = e.target.files;
+      console.log(this.entries.post.images);
     }
   },
 
   data() {
     return {
-      posts: {
-        category_id: null,
-        //profile_id: 1,
-        is_active: 1,
-        images: []
+      entries: {
+        post: {
+          category_id: null,
+          //profile_id: 1,
+          is_active: 1,
+          images: []
+        },
+        tags: ''
       }
     };
   }

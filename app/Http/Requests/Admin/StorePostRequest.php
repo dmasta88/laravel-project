@@ -15,23 +15,33 @@ class StorePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string',
-            'content' => 'required|string',
-            'images' => 'nullable|array',
-            'video' => 'nullable|string',
-            'profile_id' => 'required|integer|exists:profiles,id',
-            'published_at' => 'nullable|date_format:Y-m-d',
-            'category_id' => 'required|integer|exists:categories,id',
-            'views' => 'nullable|integer',
-            'is_active' => 'required|boolean',
-            'image_path' => 'nullable|string'
+            'post.title' => 'required|string',
+            'post.content' => 'required|string',
+            'post.images' => 'nullable|array',
+            'post.video' => 'nullable|string',
+            'post.profile_id' => 'required|integer|exists:profiles,id',
+            'post.published_at' => 'nullable|date_format:Y-m-d\TH:i',
+            'post.category_id' => 'required|integer|exists:categories,id',
+            'post.views' => 'nullable|integer',
+            'post.is_active' => 'required|boolean',
+            'post.image_paths' => 'nullable|array',
+            'tags' => 'nullable|array'
         ];
     }
     protected function prepareForValidation()
     {
+        $image_paths = [];
+        if ($this->images) {
+            foreach ($this->images as $image) {
+                $path = Storage::disk('public')->put('images', $image);
+                $image_paths[] = ['image_path' => $path];
+                //$post->images()->create(['image_path' => $path]);
+            }
+        }
         $this->merge([
-            //'image_path' => Storage::disk('public')->put('images', $this->images),
-            'profile_id' => auth()->user()->id
+            'post.profile_id' => auth()->user()->id,
+            'post.image_paths' => $image_paths,
+            'tags' => explode(',', $this->tags)
         ]);
     }
 }
