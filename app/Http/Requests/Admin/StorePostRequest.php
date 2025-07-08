@@ -20,7 +20,7 @@ class StorePostRequest extends FormRequest
             'post.images' => 'nullable|array',
             'post.video' => 'nullable|string',
             'post.profile_id' => 'required|integer|exists:profiles,id',
-            'post.published_at' => 'nullable|date_format:Y-m-d\TH:i',
+            'post.published_at' => 'nullable|date_format:Y-m-d',
             'post.category_id' => 'required|integer|exists:categories,id',
             'post.views' => 'nullable|integer',
             'post.is_active' => 'required|boolean',
@@ -39,7 +39,7 @@ class StorePostRequest extends FormRequest
             }
         }
         $this->merge([
-            'post.profile_id' => auth()->user()->id,
+            'post.profile_id' => auth()->user()->profile->id,
             'post.image_paths' => $image_paths,
             'tags' => explode(',', $this->tags)
         ]);

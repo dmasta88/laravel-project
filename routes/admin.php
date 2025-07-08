@@ -10,9 +10,11 @@ Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
     Route::get('posts/', [PostController::class, 'index'])->name('admin.posts.index');
     Route::get('posts/create', [PostController::class, 'create'])->name('admin.posts.create');
     Route::post('posts/store', [PostController::class, 'store'])->name('admin.posts.store');
-    Route::patch('posts/update/{post}', [PostController::class, 'update'])->name('admin.posts.update');
-    Route::delete('posts/destroy/{post}', [PostController::class, 'destroy'])->name('admin.posts.destroy');
-    Route::get('posts/edit/{post}', [PostController::class, 'edit'])->name('admin.posts.edit');
+    Route::get('posts/flush-cache', [PostController::class, 'flushCache'])->name('admin.posts.cache.flush');
+    Route::post('posts/{post}/toggle-like/', [PostController::class, 'toggleLike'])->name('admin.posts.like.toggle');
+    Route::patch('posts/{post}/update/', [PostController::class, 'update'])->name('admin.posts.update');
+    Route::delete('posts/{post}/destroy/', [PostController::class, 'destroy'])->name('admin.posts.destroy');
+    Route::get('posts/{post}/edit/', [PostController::class, 'edit'])->name('admin.posts.edit');
     Route::get('posts/{post}', [PostController::class, 'show'])->name('admin.posts.show');
 });
 

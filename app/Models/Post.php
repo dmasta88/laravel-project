@@ -6,6 +6,7 @@ use App\Models\Traits\HasLog;
 use App\Observers\PostObserver;
 use App\Models\Traits\HasFilter;
 use App\Models\Traits\HasLogFile;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -19,10 +20,10 @@ class Post extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    use HasFilter;
     //use HasLog;
     //use HasLogFile;
-    protected $guarded = [];
-
+    protected $withCount = ['whoLiked', 'comments'];
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -63,10 +64,18 @@ class Post extends Model
     // }    
     public function comments(): MorphMany
     {
-        return $this->morphMany(Comment::class, 'commentable');
+        return $this->morphMany(Comment::class, 'commentable')->latest();
     }
     public function getImageUrlsAttribute()
     {
         return $this->images->pluck('url')->toArray();
+    }
+    public function getIsLikedAttribute(): bool
+    {
+        return $this->whoLiked->contains(Auth::user()->profile->id);
+    }
+    public function getDateFormattedAttribute(): string
+    {
+        return $this->created_at->diffForHumans();
     }
 }

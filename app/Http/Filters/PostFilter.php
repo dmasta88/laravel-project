@@ -22,6 +22,10 @@ class PostFilter extends AbstractFilter
     {
         $builder->where('title', 'ilike', "%{$data}%");
     }
+    protected function content($builder, $data)
+    {
+        $builder->where('content', 'ilike', "%{$data}%");
+    }
     protected function publishedAtFrom($builder, $data)
     {
         $builder->where('published_at', '>', $data);

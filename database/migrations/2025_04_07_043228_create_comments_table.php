@@ -14,6 +14,11 @@ return new class extends Migration
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->morphs('commentable');
+            $table->foreignId('profile_id')->index()->constrained('profiles');
+            $table->foreignId('parent_id')->nullable()->index()->constrained('comments');
+            $table->text('content');
+            $table->dateTime('published_at')->nullable();
         });
     }
 

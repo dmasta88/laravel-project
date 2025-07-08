@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Post;
 
+use App\Http\Resources\Profile\ProfileResource;
 use App\Http\Resources\Tag\TagResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -19,6 +20,7 @@ class PostResource extends JsonResource
             'category_id' => $this->category_id,
             'category_title' => $this->category->title,
             'published_at' => $this->published_at,
+            'date_formatted' => $this->date_formatted,
             'id' => $this->id,
             'title' => $this->title,
             'content' => $this->content,
@@ -26,7 +28,11 @@ class PostResource extends JsonResource
             'views' => $this->views,
             'image_urls' => $this->image_urls,
             'profile_id' => $this->profile_id,
-            'tags' => implode(',', array_column(TagResource::collection($this->tags)->resolve(), 'title'))
+            'profile' => ProfileResource::make($this->profile)->resolve(),
+            'tags' => implode(',', array_column(TagResource::collection($this->tags)->resolve(), 'title')),
+            'is_liked' => $this->is_liked,
+            'who_liked_count' => $this->who_liked_count,
+            'comments_count' => $this->comments_count
         ];
     }
 }

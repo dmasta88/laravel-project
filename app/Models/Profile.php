@@ -13,6 +13,10 @@ class Profile extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
     public function likedPosts()
     {
         return $this->morphedByMany(Post::class, 'likeable');

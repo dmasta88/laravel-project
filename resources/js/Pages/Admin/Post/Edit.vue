@@ -48,7 +48,8 @@
     </div>
   </div>
   <div class="py-4 px-2">
-    <a href="#" @click.prevent="updatePost" type="button" class="bg-gray-600 p-4 text-white">Update</a>
+    <Link href="#" @click.prevent="updatePost" as="button" type="button" class="bg-gray-600 p-4 text-white">Update
+    </Link>
     <Link :href="route('admin.posts.index')" as="button" type="button" class="bg-blue-500 ml-4 p-4 text-white">
     Back
     </Link>

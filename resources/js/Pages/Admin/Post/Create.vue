@@ -1,20 +1,42 @@
 <template>
   <div>
+    <div>
+      <p v-if="isCreated" class="m-2 p-4 bg-green-500 text-white w-1/2">
+        Post was created
+      </p>
+    </div>
     <h1 class="p-4 text-2xl">
       Create post
     </h1>
     <div class="p-2">
       <input v-model="entries.post.title" type="text" name="title" placeholder="Title" class="w-1/3">
     </div>
+    <div v-if="errors['post.title']">
+      <p v-for="error in errors['post.title']" class="m-2 p-4 bg-red-500 text-white w-1/2">
+        {{ error }}
+      </p>
+    </div>
     <div class="p-2">
       <textarea v-model="entries.post.content" type="text" name="content" placeholder="Content"
         class="w-1/3"></textarea>
     </div>
+    <div v-if="errors['post.content']">
+      <p v-for="error in errors['post.content']" class="m-2 p-4 bg-red-500 text-white w-1/2">
+        {{ error }}
+      </p>
+    </div>
+
     <div class="p-2">
       <label>Published at:</label>
     </div>
     <div class="p-2">
-      <input v-model="entries.post.published_at" type="datetime-local" name="date" placeholder="Date" class="w-1/3">
+      <input v-model="entries.post.published_at" type="date" name="date" placeholder="Date" class="w-1/3">
+    </div>
+    <div>
+      <p v-if="errors['post.published_at']" v-for="error in errors['post.published_at']"
+        class="m-2 p-4 bg-red-500 text-white w-1/2">
+        {{ error }}
+      </p>
     </div>
     <div class="p-2">
       <input v-model="entries.tags" type="text" name="text" placeholder="Tags" class="w-1/3">
@@ -63,20 +85,26 @@ export default defineComponent({
             formData.append('images[]', this.entries.post.images[i]);
           }
         } else {
-          formData.append(key, this.entries.posts[key]);
+          formData.append(key, this.entries.post[key]);
         }
       }
-      axios.post(route('admin.posts.store'), formData)
-        // axios.post(route('admin.posts.store'), this.entries, {
-        //   headers: {
-        //     'Content-Type': 'multipart/form-data'
-        //   }
-        // })
+      //axios.post(route('admin.posts.store'), formData)
+      axios.post(route('admin.posts.store'), this.entries, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
         .then(res => {
           console.log(res)
-          this.entries.post = { category_id: null, is_active: 1 }
+          this.entries.post = { category_id: null, is_active: null }
           this.entries.tags = '';
           this.$refs.input_images.value = null
+          this.$nextTick(() => {
+            this.isCreated = true
+          })
+        }).catch(errors => {
+          console.log(errors)
+          this.errors = errors.response.data.errors
         })
     },
     setImage(e) {
@@ -90,15 +118,26 @@ export default defineComponent({
       entries: {
         post: {
           category_id: null,
-          //profile_id: 1,
           is_active: 1,
           images: []
         },
         tags: ''
-      }
+      },
+      errors: {},
+      isCreated: false
     };
+  },
+  watch: {
+    entries: {
+      handler(newValue) {
+        this.isCreated = false
+        this.errors = {}
+      },
+      deep: true
+    }
   }
 });
+
 </script>
 
 <style scoped lang="css"></style>

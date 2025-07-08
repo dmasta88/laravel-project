@@ -22,7 +22,16 @@ class IndexPostRequest extends FormRequest
             'content' => 'nullable|string',
             'profile_id' => 'nullable|integer|exists:profiles,id',
             'views_from' => 'nullable|integer',
-            'is_active' => 'nullable|boolean'
+            'is_active' => 'nullable|boolean',
+            'per_page' => 'nullable|integer|min:1',
+            'page' => 'nullable|integer|min:1',
         ];
+    }
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'per_page' => $this->per_page ?? 5,
+            'page' => $this->page ?? 1,
+        ]);
     }
 }
