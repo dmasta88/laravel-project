@@ -10,6 +10,7 @@ use App\Http\Controllers\Client\CommentController;
 Route::group(['middleware' => 'auth'], function () {
     Route::get('posts/', [PostController::class, 'index'])->name('dashboard');
     Route::get('posts/{post}/show', [PostController::class, 'show'])->name('client.posts.show');
+    Route::post('posts/{post}/toggle-like/', [PostController::class, 'toggleLike'])->name('client.posts.like.toggle');
     //Route::get('posts/{post}/comments', [PostController::class, 'postComments'])->name('client.posts.comments.index');
     Route::get('posts/{post}/comments', [PostController::class, 'indexComments'])->name('client.posts.comments.index');
     Route::post('posts/{post}/comments', [PostController::class, 'storeComment'])->name('client.posts.comments.store');

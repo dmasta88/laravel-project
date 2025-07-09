@@ -31,7 +31,7 @@ class PostResource extends JsonResource
             'profile' => ProfileResource::make($this->profile)->resolve(),
             'tags' => implode(',', array_column(TagResource::collection($this->tags)->resolve(), 'title')),
             'is_liked' => $this->is_liked,
-            'who_liked_count' => $this->who_liked_count,
+            'liked_count' => $this->who_liked_count,
             'comments_count' => $this->comments_count
         ];
     }

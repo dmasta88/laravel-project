@@ -1,6 +1,11 @@
 <template>
   <div class="w-1/2 mx-auto bg-white p-4">
     <div class="content mb-4">
+      <div class="">
+        <NavLink :href="route('dashboard')">
+          Back
+        </NavLink>
+      </div>
       <div class="mb-4">
         <h1 class="text-blue-950 text-xl font-black">{{ postData.title }}</h1>
       </div>
@@ -16,7 +21,8 @@
       <div>
         <p>{{ postData.content }}</p>
       </div>
-      <div>
+      <div class="flex justify-end">
+        <LikeButton :content="postData" @like="toggleLike"></LikeButton>
       </div>
     </div>
     <div class="comments">
@@ -56,14 +62,18 @@ import PrimaryButton from '@/Components/PrimaryButton.vue'
 import { Link } from '@inertiajs/vue3';
 import CommentBox from '@/Components/Post/CommentBox.vue';
 import CommentForm from '@/Components/Post/CommentForm.vue';
+import NavLink from '@/Components/NavLink.vue';
+import LikeButton from '@/Components/Post/LikeButton.vue';
 
 export default defineComponent({
   name: 'Show',
   components: {
     Link,
+    NavLink,
     PrimaryButton,
     CommentBox,
-    CommentForm
+    CommentForm,
+    LikeButton
   },
   layout: ClientLayout,
   props: {
@@ -100,6 +110,16 @@ export default defineComponent({
     this.$watch('modelValue', () => { }, {});
   },
   methods: {
+    toggleLike({ likedContent, onSuccess = () => { } }) {
+      console.log('Like!')
+      axios.post(route('client.posts.like.toggle', likedContent.id)).then(
+        (res) => {
+          this.commentData = res.data
+          onSuccess(res.data)
+          //this.post.who_liked_count = res.data.who_liked_count
+        }
+      )
+    },
     storeComment({ content, parent_id = null, onSuccess = () => { }, onError = () => { } }) {
       axios.post(route('client.posts.comments.store', this.post.id), { content: content, parent_id: parent_id })
         .then(

@@ -1,16 +1,7 @@
 <template>
   <div class="w-1/3 mx-auto">
-    <h1 class="text-center">Dashboard</h1>
-    <div v-for="post in posts" class="bg-white p-4 mb-4">
-      <div v-for="image in post.image_urls">
-        <img :src="image" class="w-2/5">
-      </div>
-      <div>
-        <Link :href="route('client.posts.show', post.id)">
-        <h3 class="text-blue-950">{{ post.title }}</h3>
-        </Link>
-      </div>
-    </div>
+    <h1 class="text-center text-xl my-4 text-black">Dashboard</h1>
+    <PostItem v-for="post in posts" :post="post"></PostItem>
   </div>
 </template>
 
@@ -18,11 +9,13 @@
 import { defineComponent } from 'vue'
 import ClientLayout from '@/Layouts/ClientLayout.vue'
 import { Link } from '@inertiajs/vue3';
+import PostItem from '@/Components/Post/PostItem.vue';
 
 export default defineComponent({
   name: 'Index',
   components: {
-    Link
+    Link,
+    PostItem
   },
   layout: ClientLayout,
   props: {

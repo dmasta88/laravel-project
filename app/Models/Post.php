@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 //#[ObservedBy(PostObserver::class)]
 
@@ -28,9 +30,13 @@ class Post extends Model
     {
         return $this->belongsTo(Category::class);
     }
-    public function profile()
+    public function profile(): BelongsTo
     {
         return $this->belongsTo(Profile::class);
+    }
+    public function user(): BelongsTo
+    {
+        return $this->profile->user();
     }
     public function images()
     {
