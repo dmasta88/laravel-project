@@ -8,4 +8,4 @@ Profile pages with editable info
 Friend request system
 Posts with likes and comments
 RESTful architecture & clean MVC structure
-Responsive UI (Bootstrap)
+Responsive UI (vue.js, inertia)
