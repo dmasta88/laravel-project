@@ -17,13 +17,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        //$user = User::factory(1)->create();
 
         // User::factory()->create([
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
-        $user = User::firstOrCreate(['name' => "admin"], ['email' => 'tweens@inbox.ru', 'password' => Hash::make(123123)]);
+
 
         $permissions = [
             [
@@ -56,8 +56,9 @@ class DatabaseSeeder extends Seeder
                 $role->permissions()->sync([2, 3]);
             }
         }
-
-
+        $user = User::firstOrCreate(['name' => "admin"], ['email' => 'tweens@inbox.ru', 'password' => Hash::make(123123)]);
+        $user->roles()->sync([1, 2]);
+        $user = User::firstOrCreate(['name' => "dmasta"], ['email' => 'dmasta88@yandex.ru', 'password' => Hash::make(321321)]);
         $user->roles()->sync([1, 2]);
         //$user->profile()->create();
         $this->call([

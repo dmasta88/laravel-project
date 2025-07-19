@@ -7,49 +7,45 @@
         </NavLink>
       </div>
       <div class="mb-4">
-        <h1 class="text-blue-950 text-xl font-black">{{ postData.title }}</h1>
+        <h1 class="text-blue-950 text-xl font-black">{{ post.title }}</h1>
       </div>
       <div class="flex justify-between mb-4">
-        <p class="text-gray-500 text-sm">{{ postData.profile.login }}</p>
-        <p class="text-gray-500 text-sm">{{ postData.date_formatted }}</p>
+        <p class="text-gray-500 text-sm">{{ post.profile.login }}</p>
+        <p class="text-gray-500 text-sm">{{ post.date_formatted }}</p>
       </div>
-      <div v-if="postData.image_urls.length !== 0">
-        <div v-for="image in postData.image_urls">
+      <div v-if="post.image_urls.length !== 0">
+        <div v-for="image in post.image_urls">
           <img :src="image" class="m-1">
         </div>
       </div>
       <div>
-        <p>{{ postData.content }}</p>
+        <p>{{ post.content }}</p>
       </div>
       <div class="flex justify-end">
-        <LikeButton :content="postData" @like="toggleLike"></LikeButton>
+        <LikeButton :content="post" @like="toggleLikePost"></LikeButton>
       </div>
     </div>
     <div class="comments">
-      <template v-if="commentsData.length">
+      <template v-if="comments.data.length">
         <CommentForm @submit="storeComment"></CommentForm>
-        <div v-for="comment in commentsData" :key="comment.id">
-          <CommentBox @submit="storeComment" :comment="comment" v-if="!comment.parent_id">
+        <div v-for="comment in comments.data" :key="comment.id">
+          <CommentBox @submit="storeComment" @load="loadReplies" :comment="comment"
+            :pagination="comments.childrenPagination[comment.id]" v-if="!comment.parent_id">
           </CommentBox>
-
-          <!-- <template v-for="child in commentsData" :key="child.id">
-            <CommentBox class="ml-4" :key="child.id" :comment="child" v-if="child && child.parent_id === comment.id">
-            </CommentBox>
-          </template> -->
         </div>
       </template>
     </div>
-    <div class="text-center my-5" v-if="postData.comments_count > 0">
+    <div class="text-center my-5" v-if="post.comments_count > 0">
 
-      <PrimaryButton v-if="commentsActive" href="#" @click="loadComments()">Comments ({{
-        postData.comments_count }})
+      <PrimaryButton v-if="comments.active" href="#" @click="loadComments()">Comments ({{
+        post.comments_count }})
       </PrimaryButton>
 
     </div>
     <div class="text-center my-5">
-      <PrimaryButton href="#" v-if="paginationData.last_page > 0 && this.paginationData.next" @click="loadComments()">
-        Load
-        comments
+      <PrimaryButton href="#" v-if="comments.pagination.last_page > 0 && comments.pagination.next"
+        @click="loadComments()">
+        Load comments
       </PrimaryButton>
     </div>
   </div>
@@ -82,12 +78,18 @@ export default defineComponent({
   },
   data() {
     return {
-      commentContent: '',
-      commentsData: [],
-      paginationData: { current_page: 1 },
-      postData: this.post,
-      errors: {},
-      commentsActive: true,
+      comments: {
+        data: [],
+        pagination: {
+          current_page: 1,
+          next: null,
+          last_page: 1,
+        },
+        childrenPagination: {
+          current_page: 1,
+        },
+        active: true,
+      },
     };
   },
   watch: {
@@ -101,7 +103,7 @@ export default defineComponent({
   beforeMount() {
   },
   mounted() {
-    //console.log(this.post)
+    console.log(this.post)
   },
   updated() {
   },
@@ -110,13 +112,13 @@ export default defineComponent({
     this.$watch('modelValue', () => { }, {});
   },
   methods: {
-    toggleLike({ likedContent, onSuccess = () => { } }) {
-      console.log('Like!')
+    toggleLikePost({ likedContent }) {
+      console.log('Liked post!')
+      console.log(likedContent)
       axios.post(route('client.posts.like.toggle', likedContent.id)).then(
         (res) => {
-          this.commentData = res.data
-          onSuccess(res.data)
-          //this.post.who_liked_count = res.data.who_liked_count
+          likedContent.liked_count = res.data.liked_count
+          likedContent.is_liked = res.data.is_liked
         }
       )
     },
@@ -124,7 +126,9 @@ export default defineComponent({
       axios.post(route('client.posts.comments.store', this.post.id), { content: content, parent_id: parent_id })
         .then(
           res => {
-            this.commentsData.unshift(res.data.data)
+            console.log(res)
+            this.comments.data.unshift(res.data.data)
+            //this.loadReplies(parent_id)
             onSuccess(res.data.data)
           })
         .catch(
@@ -134,19 +138,47 @@ export default defineComponent({
         )
     },
     loadComments() {
-      this.commentsActive = false
+      this.comments.active = false
       axios.get(route('client.posts.comments.index', this.post.id), {
         params: {
-          page: this.paginationData.current_page
+          page: this.comments.pagination.current_page
         }
       }).then((res) => {
         console.log(res)
-        this.commentsData = [...this.commentsData, ...res.data.data]
-        this.paginationData = res.data.meta
-        this.paginationData.next = res.data.links.next
-        this.paginationData.current_page++
+        this.comments.data = [...this.comments.data, ...res.data.data]
+        this.comments.pagination = res.data.meta
+        this.comments.pagination.next = res.data.links.next
+        this.comments.pagination.current_page++
       })
-    }
+    },
+    loadReplies({ parentComment }) {
+      const parentId = parentComment.id
+      axios.get(route('client.comments.children', parentComment.id), {
+        params: {
+          page: this.comments.childrenPagination[parentId]
+            ? this.comments.childrenPagination[parentId].current_page
+            : 1
+        }
+      }).then((res) => {
+        console.log(res)
+        if (res.data.data.length > 0) {
+          const index = this.comments.data.findIndex((item) => {
+            return item.id == parentId
+          })
+          this.comments.childrenPagination[parentId] = res.data.meta
+          res.data.data.forEach(child => {
+            this.comments.data[index].children.push(child)
+          })
+          this.comments.childrenPagination[parentId].current_page++
+          console.log(this.comments.data[index].children)
+        }
+        else {
+          this.comments.childrenPagination[parentId] = null
+        }
+      })
+      //this.commentsRepliesActive = !this.commentsRepliesActive
+      // this.activeReplay = !this.activeReplay
+    },
   }
 });
 </script>

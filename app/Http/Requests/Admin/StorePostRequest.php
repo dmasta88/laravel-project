@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -39,7 +40,7 @@ class StorePostRequest extends FormRequest
             }
         }
         $this->merge([
-            'post.profile_id' => auth()->user()->profile->id,
+            'post.profile_id' => Auth::user()->profiles()->first()->id,
             'post.image_paths' => $image_paths,
             'tags' => explode(',', $this->tags)
         ]);

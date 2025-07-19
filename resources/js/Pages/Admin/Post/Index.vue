@@ -1,19 +1,19 @@
 <template>
   <div>
     <div class="flex justify-between p-2">
-      <input type="text" placeholder="Title" v-model="filter.title">
-      <input type="text" placeholder="Content" v-model="filter.content">
-      <input type="text" placeholder="Views from" v-model="filter.views_from">
-      <input type="date" placeholder="published_at" v-model="filter.published_at_from">
+      <input type="text" placeholder="Title" v-model="filter.title" />
+      <input type="text" placeholder="Content" v-model="filter.content" />
+      <input type="text" placeholder="Views from" v-model="filter.views_from" />
+      <input type="date" placeholder="published_at" v-model="filter.published_at_from" />
       <select name="categories" v-model="filter.category_id" id="categories">
         <option value="null" disabled>Select category</option>
-        <option v-for="category in categories" :value="category.id">{{ category.title }}</option>
+        <option v-for="category in categories" :value="category.id">
+          {{ category.title }}
+        </option>
       </select>
     </div>
     <div class="flex justify-between p-2">
-      <h1 class="text-2xl">
-        Admin Index
-      </h1>
+      <h1 class="text-2xl">Admin Index</h1>
       <!-- <a href="#" class="p-4 bg-blue-800 text-white">Create post</a> -->
       <Link :href="route('admin.posts.create')" class="px-4 py-2 bg-blue-800 text-white">Create post</Link>
     </div>
@@ -22,19 +22,24 @@
         <tr>
           <th
             class="text-center border-b dark:border-slate-600 font-medium p-4 pb-3 text-slate-400 dark:text-slate-200">
-            ID</th>
+            ID
+          </th>
           <th
             class="text-center border-b dark:border-slate-600 font-medium p-4 pb-3 text-slate-400 dark:text-slate-200">
-            Title</th>
+            Title
+          </th>
           <th
             class="text-center border-b dark:border-slate-600 font-medium p-4 pb-3 text-slate-400 dark:text-slate-200">
-            Views</th>
+            Views
+          </th>
           <th
             class="text-center border-b dark:border-slate-600 font-medium p-4 pb-3 text-slate-400 dark:text-slate-200">
-            Likes</th>
+            Likes
+          </th>
           <th
             class="text-center border-b dark:border-slate-600 font-medium p-4 pb-3 text-slate-400 dark:text-slate-200">
-            Actions</th>
+            Actions
+          </th>
         </tr>
       </thead>
       <tbody class="bg-white dark:bg-slate-800">
@@ -56,8 +61,8 @@
           </td>
           <td
             class="text-center border-b border-slate-100 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400">
-            <div class="flex justify-center ">
-              <div class="mr-1">{{ post.who_liked_count }}</div>
+            <div class="flex justify-center">
+              <div class="mr-1">{{ post.liked_count }}</div>
               <div>
                 <a href="#" @click.prevent="toggleLike(post.id)">
                   <svg xmlns="http://www.w3.org/2000/svg" :fill="post.is_liked ? '#336cc9' : 'none'" viewBox="0 0 24 24"
@@ -71,14 +76,14 @@
           </td>
           <td
             class="text-center border-b border-slate-100 dark:border-slate-700 p-4 text-slate-500 dark:text-slate-400">
-            <div class="flex justify-center ">
+            <div class="flex justify-center">
               <Link :href="route('admin.posts.edit', post.id)"><svg xmlns="http://www.w3.org/2000/svg" fill="none"
                 viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                 <path stroke-linecap="round" stroke-linejoin="round"
                   d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
               </svg>
               </Link>
-              <a href='#' @click.prevent="deletePost(post.id)"><svg xmlns="http://www.w3.org/2000/svg" fill="none"
+              <a href="#" @click.prevent="deletePost(post.id)"><svg xmlns="http://www.w3.org/2000/svg" fill="none"
                   viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                   <path stroke-linecap="round" stroke-linejoin="round"
                     d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
@@ -99,7 +104,7 @@
         <a v-if="paginationData.last_page > 1" v-for="(page, index) in paginationData.links" :key="index"
           @click.prevent="setPage(page)" :class="[
             'border m-2 cursor-pointer bg-slate-300 px-2 py-1',
-            page.active ? 'border-black-300 bg-slate-500 text-white' : 'border-slate-100'
+            page.active ? 'border-black-300 bg-slate-500 text-white' : 'border-slate-100',
           ]" v-html="page.label"></a>
       </ul>
     </div>
@@ -109,7 +114,7 @@
   </div>
 </template>
 
-<script lang='js'>
+<script lang="js">
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import { Link } from '@inertiajs/vue3';
 import { defineComponent } from 'vue'

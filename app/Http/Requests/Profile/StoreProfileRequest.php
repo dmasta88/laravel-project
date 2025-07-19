@@ -21,7 +21,7 @@ class StoreProfileRequest extends FormRequest
             'avatar' => 'nullable|string',
             'city' => 'nullable|string',
             'login' => 'required|string|unique:profiles,login',
-            'user_id' => 'required|integer|unique:profiles,id'
+            'user_id' => 'required|integer'
         ];
     }
 }

@@ -13,11 +13,11 @@ class UserObserver
     public function created(User $user): void
     {
         Profile::firstOrCreate(['user_id' => $user->id], [
-            'second_name' => 'Alex Admin',
-            'third_name' => 'Andreevich',
+            'second_name' => fake()->lastName(),
+            'third_name' => fake()->firstName(),
             'avatar' => fake()->imageUrl(),
             'city' => fake()->city(),
-            'login' => 'alex777',
+            'login' => fake()->userName(),
         ]);
     }
 

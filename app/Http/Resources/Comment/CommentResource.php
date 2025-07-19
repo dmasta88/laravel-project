@@ -24,9 +24,12 @@ class CommentResource extends JsonResource
             'published_at' => $this->published_at,
             'category_title' => $this->category_title,
             'parent_id' => $this->parent_id,
-            'children' => CommentResource::collection($this->children)->resolve(),
+            //'children' => CommentResource::collection($this->children()->paginate(2, '*', 'page', 1)),
+            'children' => [],
             'is_liked' => $this->is_liked,
-            'liked_count' => $this->who_liked_count
+            'liked_count' => $this->who_liked_count,
+            'children_count' => $this->children_count
+
         ];
     }
 }

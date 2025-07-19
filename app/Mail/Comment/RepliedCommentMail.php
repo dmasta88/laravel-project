@@ -22,9 +22,7 @@ class RepliedCommentMail extends Mailable
         private Comment $comment,
         private Comment $parentComment,
         private Profile $profile
-    ) {
-        //
-    }
+    ) {}
 
     /**
      * Get the message envelope.

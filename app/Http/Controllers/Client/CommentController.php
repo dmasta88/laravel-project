@@ -14,6 +14,7 @@ use Illuminate\Http\Response as HttpResponse;
 use App\Http\Resources\Comment\CommentResource;
 use App\Http\Requests\Client\Comment\IndexCommentRequest;
 use App\Http\Requests\Client\Comment\ReplyCommentRequest;
+use App\Jobs\Comment\CommentLikedJob;
 use App\Mail\Comment\LikedCommentMail;
 use Illuminate\Support\Facades\Response as FacadesResponse;
 
@@ -27,8 +28,16 @@ class CommentController extends Controller
     }
     public function toggleLike(Comment $comment): array
     {
-        $comment->whoLiked()->toggle(Auth::user()->profile->id);
-        Mail::to($comment->user)->send(new LikedCommentMail($comment, Auth::user()->profile));
+        if ($comment->whoLiked()->toggle(Auth::user()->profile->id)['attached']) {
+            CommentLikedJob::dispatch($comment, Auth::user())->onQueue('emails');
+            //Mail::to($comment->user)->send(new LikedCommentMail($comment, Auth::user()->profile));
+        }
         return CommentResource::make($comment->fresh())->resolve();
+    }
+    public function children(Comment $comment, IndexCommentRequest $request)
+    {
+        $data = $request->validated();
+        $children = $comment->children()->latest()->paginate($data['per_page'], '*', 'page', $data['page']);
+        return CommentResource::collection($children);
     }
 }

@@ -29,21 +29,32 @@ Route::group(['middleware' => ['api'], 'prefix' => 'auth'], function () {
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
 });
-Route::group(['middleware' => ['api', /*isPermissionMiddleware::class,*/ DbListener::class]], function () {
+Route::group(['middleware' => ['api', isAdminMiddleware::class/*isPermissionMiddleware::class,DbListener::class*/]], function () {
     Route::apiResource('videos', VideoController::class);
     Route::apiResource('posts', PostController::class);
+    Route::apiResources([
+        'categories' => CategoryController::class,
+        'chats' => ChatController::class,
+        'comments' => CommentController::class,
+        'tags' => TagController::class,
+        'messages' => MessageController::class,
+        'reposts' => RepostController::class,
+        'profiles' => ProfileController::class,
+        'users' => UserController::class,
+        'roles' => RoleController::class,
+    ]);
 });
 
 
 //Route::apiResource('posts', PostController::class);
-Route::apiResources([
-    'categories' => CategoryController::class,
-    'chats' => ChatController::class,
-    'comments' => CommentController::class,
-    'tags' => TagController::class,
-    'messages' => MessageController::class,
-    'reposts' => RepostController::class,
-    'profiles' => ProfileController::class,
-    'users' => UserController::class,
-    'roles' => RoleController::class,
-]);
+// Route::apiResources([
+//     'categories' => CategoryController::class,
+//     'chats' => ChatController::class,
+//     'comments' => CommentController::class,
+//     'tags' => TagController::class,
+//     'messages' => MessageController::class,
+//     'reposts' => RepostController::class,
+//     'profiles' => ProfileController::class,
+//     'users' => UserController::class,
+//     'roles' => RoleController::class,
+// ]);

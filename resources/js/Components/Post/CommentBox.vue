@@ -1,21 +1,21 @@
 <template>
     <div class="bg-cyan-100 p-4 mb-4">
         <div class="flex justify-start w-2/4 mb-4">
-            <div class="text-black text-sm">{{ commentData.profile.login }}</div>
-            <div class="text-gray-500 text-sm pl-4">{{ commentData.formatted_date }}</div>
+            <div class="text-black text-sm">{{ comment.profile.login }}</div>
+            <div class="text-gray-500 text-sm pl-4">{{ comment.formatted_date }}</div>
         </div>
-        <div class="mb-4">{{ commentData.content }}</div>
+        <div class="mb-4">{{ comment.content }}</div>
         <div class="flex justify-between mb-4">
             <div>
 
-                <a href="#" class="text-blue-600 text-sm  mr-2" v-if="commentData.children.length > 0"
-                    @click.prevent="activateReply">{{ commentData.children.length }} replies
+                <a href="#" class="text-blue-600 text-sm  mr-2" v-if="comment.children_count > 0"
+                    @click.prevent="handleReplies">{{ comment.children_count }} replies
                 </a>
-                <a href="#" class="text-blue-600 text-sm" v-if="!commentData.parent_id && !activeReplay"
-                    @click.prevent="activeReplay = true">Reply</a>
+                <a href="#" class="text-blue-600 text-sm" v-if="!comment.parent_id && !activeReplay"
+                    @click.prevent="handleReplies">Reply</a>
             </div>
             <div class="flex">
-                <LikeButton :content="commentData" @like="toggleLike"></LikeButton>
+                <LikeButton :content="comment" @like="toggleLike"></LikeButton>
             </div>
         </div>
 
@@ -24,7 +24,7 @@
         </div>
     </div>
     <div class="children ml-4">
-        <div v-if="commentData.children">
+        <div v-if="comment.children">
             <div class="mb-4" v-if="activeReplay">
                 <div>
                     <textarea placeholder="Type comment" name="commentReplyContent" v-model="commentContent"
@@ -35,9 +35,15 @@
                 </div>
                 <PrimaryButton @click.prevent="commentReply" class="my-2">Reply</PrimaryButton>
             </div>
-            <CommentBox v-if="commentsRepliesActive" v-for="child in commentData.children" :key="child.id"
-                :comment="child">
+            <CommentBox v-if="activeReplay" v-for="child in comment.children" :key="child.id" :comment="child">
             </CommentBox>
+            <div class="text-center my-5">
+
+                <PrimaryButton href="#" v-if="pagination && pagination.current_page <= pagination.last_page"
+                    @click="handleReplies">
+                    Load replies
+                </PrimaryButton>
+            </div>
         </div>
     </div>
 </template>
@@ -50,6 +56,7 @@ import LikeButton from './LikeButton.vue';
 export default defineComponent({
     props: {
         comment: Object,
+        pagination: Object
     },
     components: {
         InputError,
@@ -57,41 +64,41 @@ export default defineComponent({
         PrimaryButton,
         LikeButton
     },
-    emits: ['submit'],
+    emits: ['submit', 'load'],
     data() {
         return {
             commentContent: '',
             activeReplay: false,
             commentsRepliesActive: false,
             errors: {},
-            commentData: this.comment
+            commentData: this.comment,
         }
     }
     ,
     methods: {
-        activateReply() {
-            this.commentsRepliesActive = !this.commentsRepliesActive
-            this.activeReplay = !this.activeReplay
+        handleReplies() {
+            this.$emit('load', { parentComment: this.comment })
+            this.activeReplay = true
+
         },
         commentReply() {
             const onSuccess = (commentData) => {
                 this.commentContent = ''
-                this.commentData.children.unshift(commentData)
+                this.comment.children.unshift(commentData)
                 this.commentsRepliesActive = true
                 this.activeReplay = true
             }
             const onError = (errors) => this.errors = errors
             this.$emit('submit', { content: this.commentContent, parent_id: this.comment.id, onSuccess, onError })
-            //console.log(this.commentData)
-
+            //console.log(this.comment)
         },
         toggleLike({ likedContent, onSuccess = () => { } }) {
             console.log('Like!')
             axios.post(route('client.comments.like.toggle', likedContent.id)).then(
                 (res) => {
-                    this.commentData = res.data
-                    onSuccess(res.data)
-                    //this.post.who_liked_count = res.data.who_liked_count
+                    console.log(res.data)
+                    this.comment.is_liked = res.data.is_liked
+                    this.comment.liked_count = res.data.liked_count
                 }
             )
         }
