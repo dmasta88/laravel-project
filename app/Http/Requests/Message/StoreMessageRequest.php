@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Message;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreMessageRequest extends FormRequest
@@ -16,9 +17,15 @@ class StoreMessageRequest extends FormRequest
     {
         return [
             "content" => "required|string",
-            "profile_id" => "required|integer",
-            "chat_id" => "required|integer",
+            "profile_id" => "required|integer|exists:profiles,id",
             'published_at' => 'required|date_format:Y-m-d H:i:s',
         ];
+    }
+    public function prepareForValidation()
+    {
+        return $this->merge([
+            'published_at' => now()->format('Y-m-d H:i:s'),
+            'profile_id' => Auth::user()->profile->id
+        ]);
     }
 }

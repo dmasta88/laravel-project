@@ -24,8 +24,10 @@ class PostService
     }
     public static function store($data)
     {
-        $image_paths = $data['post']['image_paths'];
-        unset($data['images'], $data['post']['image_paths']);
+        if (isset($data['post']['image_paths'])) {
+            $image_paths = $data['post']['image_paths'];
+            unset($data['images'], $data['post']['image_paths']);
+        }
         try {
             DB::beginTransaction();
             $post = Post::create($data['post']);

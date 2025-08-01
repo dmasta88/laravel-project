@@ -4,8 +4,8 @@
       <div class="text-center">header</div>
     </header>
   </section>
-  <section class="flex justify-center">
-    <article class="p-2 bg-gray-100">
+  <section class="">
+    <article class="flex justify-center w-full p-2 bg-gray-100">
       <slot />
     </article>
   </section>

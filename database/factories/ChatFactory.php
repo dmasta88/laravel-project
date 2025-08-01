@@ -18,7 +18,7 @@ class ChatFactory extends Factory
     public function definition(): array
     {
         return [
-            'profile_id' => Profile::inRandomOrder()->first(),
+            'creator_id' => Profile::inRandomOrder()->first(),
             'title' => fake()->realTextBetween(100, 200)
         ];
     }

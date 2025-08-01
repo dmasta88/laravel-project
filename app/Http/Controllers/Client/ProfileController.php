@@ -20,6 +20,7 @@ class ProfileController extends Controller
     public function show(Profile $profile)
     {
         $posts = PostResource::collection($profile->posts)->resolve();
-        return Inertia::render('Client/Profile/Show', compact('posts', 'profile'));
+        $myProfile = Auth::user()->profile;
+        return Inertia::render('Client/Profile/Show', compact('posts', 'profile', 'myProfile'));
     }
 }

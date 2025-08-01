@@ -11,10 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('chats', function (Blueprint $table) {
+        Schema::create('statistics', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('creator_id')->constrained('profiles');
-            $table->text('title')->nullable()->unique();
+            $table->timestamp('date');
+            $table->integer('posts_count');
+            $table->integer('comments_count');
+            $table->integer('likes_count');
+            $table->integer('views_count');
+            $table->string('likes_views');
+            $table->string('likes_comments');
             $table->timestamps();
         });
     }
@@ -24,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('chats');
+        Schema::dropIfExists('statistics');
     }
 };

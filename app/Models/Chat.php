@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Traits\HasFilter;
+use Auth;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,8 +16,16 @@ class Chat extends Model
     {
         return $this->hasMany(Message::class);
     }
-    public function profile()
+    public function creator()
     {
-        return $this->belongsTo(Profile::class);
+        return $this->belongsTo(Profile::class, 'profile_id');
+    }
+    public function profiles()
+    {
+        return $this->belongsToMany(Profile::class)->withTimestamps();
+    }
+    public function getIsOwnerAttribute()
+    {
+        return Auth::user()->profile->id === $this->creator;
     }
 }

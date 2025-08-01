@@ -1,8 +1,30 @@
 <template>
   <div class="modal-shadow w-full fixed h-screen" v-if="modalIsActive" @click="modalIsActive = !modalIsActive">
     <div class="modal-wrapper flex justify-center items-center h-full">
-      <div class="modal-body w-1/2 bg-white min-h-36" @click.stop>
-        <div class="modal-content p-4">Body modal</div>
+      <div class="modal-body w-1/2 bg-white" @click.stop>
+        <div class="modal-content p-4">
+          <h2>Repost</h2>
+          <div class="p-2">
+            <input v-model="entries.post.title" type="text" name="title" placeholder="Title" class="w-full">
+          </div>
+          <div v-if="errors['post.title']">
+            <p v-for="error in errors['post.title']" class="m-2 p-4 bg-red-500 text-white w-full">
+              {{ error }}
+            </p>
+          </div>
+          <div class="p-2">
+            <textarea v-model="entries.post.content" type="text" name="content" placeholder="Content"
+              class="w-full"></textarea>
+          </div>
+          <h5 class="text-xl my-4">{{ post.title }}</h5>
+          <div class="flex justify-between mb-4">
+            <p class="text-gray-500 text-sm">{{ post.profile.login }}</p>
+            <p class="text-gray-500 text-sm">{{ post.date_formatted }}</p>
+          </div>
+          <div class="flex justify-center">
+            <PrimaryButton @click="repost">Repost</PrimaryButton>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -11,12 +33,27 @@
       <img :src="image" class="w-2/5" />
     </div>
     <div>
-      <div>
+      <div class="text-gray-400">
+        {{ post.profile.login }}
+      </div>
+      <div class="mb-4 text-sm text-gray-500">
+        {{ post.date_formatted }}
+      </div>
+      <div class="title-item" v-if="!post.parent_id">
         <Link :href="route('client.posts.show', post.id)">
         <h3 class="text-blue-950">{{ post.title }}</h3>
         </Link>
       </div>
-      <div class="flex justify-between item-footer my-3">
+      <div class="title-item" v-else>
+        <h3 class="text-blue-950">{{ post.title }}</h3>
+      </div>
+      <div v-if="post.parent_id">
+        <div class="ml-4 my-4 border border-cyan-300">
+          <PostItem :post="post.parent.data" v-if="post.parent.data"></PostItem>
+          <PostItem :post="post.parent" v-else></PostItem>
+        </div>
+      </div>
+      <div class="flex justify-between item-footer mt-3">
         <LikeButton :content="post" @like="toggleLike"></LikeButton>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
           class="size-5">
@@ -38,12 +75,15 @@
 import { Link } from '@inertiajs/vue3';
 import { defineComponent } from 'vue'
 import LikeButton from './LikeButton.vue';
+import PrimaryButton from '../PrimaryButton.vue';
+import axios from 'axios';
 
 export default defineComponent({
   name: 'PostItem',
   components: {
     Link,
-    LikeButton
+    LikeButton,
+    PrimaryButton
   },
   props: {
     post: Object
@@ -54,7 +94,17 @@ export default defineComponent({
   },
   data() {
     return {
-      modalIsActive: false
+      modalIsActive: false,
+      entries: {
+        post: {
+          parent_id: this.post.id,
+          category_id: this.post.category_id,
+          is_active: 1,
+          images: []
+        },
+        tags: ''
+      },
+      errors: {},
     };
   },
   computed: {
@@ -78,6 +128,7 @@ export default defineComponent({
   beforeMount() {
   },
   mounted() {
+
   },
   updated() {
   },
@@ -86,9 +137,15 @@ export default defineComponent({
     this.$watch('modelValue', () => { }, {});
   },
   methods: {
+    repost() {
+      axios.post(route('client.posts.repost'), this.entries).then(
+        (res) => {
+          console.log(res)
+        }
+      )
+    },
     modalActive() {
       this.modalIsActive = !this.modalIsActive
-
     },
 
     toggleLike({ likedContent, onSuccess = () => { } }) {

@@ -15,7 +15,6 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         User::firstOrCreate(['name' => "admin"], ['email' => 'tweens@inbox.ru', 'password' => Hash::make(123123)]);
-        User::firstOrCreate(['name' => "dmasta"], ['email' => 'dmasta88@yandex.ru', 'password' => Hash::make(321321)]);
         //User::factory()->create();
     }
 }

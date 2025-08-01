@@ -5,9 +5,13 @@ use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\StatisticController;
 
 Route::group(['middleware' => 'auth', 'prefix' => 'admin'], function () {
     Route::get('posts/', [PostController::class, 'index'])->name('admin.posts.index');
+
+    Route::get('statistics/', [StatisticController::class, 'index'])->name('admin.statistics.index');
+
     Route::get('posts/create', [PostController::class, 'create'])->name('admin.posts.create');
     Route::post('posts/store', [PostController::class, 'store'])->name('admin.posts.store');
     Route::get('posts/flush-cache', [PostController::class, 'flushCache'])->name('admin.posts.cache.flush');

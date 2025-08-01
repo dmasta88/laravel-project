@@ -15,7 +15,7 @@ class Profile extends Model
     }
     public function posts()
     {
-        return $this->hasMany(Post::class);
+        return $this->hasMany(Post::class)->latest();
     }
     public function likedPosts()
     {
@@ -38,5 +38,13 @@ class Profile extends Model
     public function messages()
     {
         return $this->hasMany(Message::class);
+    }
+    public function createdChats()
+    {
+        return $this->hasMany(Chat::class, 'creator_id');
+    }
+    public function chats()
+    {
+        return $this->belongsToMany(Chat::class);
     }
 }

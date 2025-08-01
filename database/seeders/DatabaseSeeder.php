@@ -60,6 +60,8 @@ class DatabaseSeeder extends Seeder
         $user->roles()->sync([1, 2]);
         $user = User::firstOrCreate(['name' => "dmasta"], ['email' => 'dmasta88@yandex.ru', 'password' => Hash::make(321321)]);
         $user->roles()->sync([1, 2]);
+        $user = User::firstOrCreate(['name' => "max"], ['email' => 'dmasta88@yandex.com', 'password' => Hash::make(321321)]);
+        $user->roles()->sync([1, 2]);
         //$user->profile()->create();
         $this->call([
             CategorySeeder::class,

@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('posts', function (Blueprint $table) {
-            $table->foreignId('profile_id')->index()->constrained('profiles');
+        Schema::create('chat_profile', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('chat_id')->constrained('chats');
+            $table->foreignId('profile_id')->constrained('profiles');
+            $table->timestamps();
         });
     }
 
@@ -21,9 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('posts', function (Blueprint $table) {
-            $table->dropForeign(['profile_id']);
-            $table->dropColumn('profile_id');
-        });
+        Schema::dropIfExists('chat_profile');
     }
 };

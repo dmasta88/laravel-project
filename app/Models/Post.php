@@ -83,4 +83,8 @@ class Post extends Model
     {
         return $this->created_at->diffForHumans();
     }
+    public function parent()
+    {
+        return $this->BelongsTo(Post::class, 'parent_id');
+    }
 }

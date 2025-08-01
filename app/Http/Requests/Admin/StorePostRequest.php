@@ -40,7 +40,7 @@ class StorePostRequest extends FormRequest
             }
         }
         $this->merge([
-            'post.profile_id' => Auth::user()->profiles()->first()->id,
+            'post.profile_id' => Auth::user()->profile->id,
             'post.image_paths' => $image_paths,
             'tags' => explode(',', $this->tags)
         ]);

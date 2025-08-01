@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Requests\Chat;
+namespace App\Http\Requests\Client\Chat;
 
+use App\Models\Profile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -18,17 +19,21 @@ class StoreChatRequest extends FormRequest
             //"title" => "required|string|unique:chats,title",
             "title" => "required|string",
             "creator_id" => "required|integer",
-            "profile_id" => "required|array",
-            "profile_id.*" => "required|integer|exists:profiles,id"
+            "profile_ids" => "required|array",
+            "profile_ids.*" => "required|integer|exists:profiles,id"
         ];
     }
     public function prepareForValidation()
     {
         $creator = Auth::user()->profile;
-        $profiles = implode(',', $this->profile_id);
+        $logins = Profile::whereIn('id', $this->profile_ids)->get()->pluck('login')->implode(', ');
+        $prifileIds = $this->profile_ids;
+        $prifileIds[] = $creator->id;
+
         return $this->merge([
             'creator_id' => $creator->id,
-            'title' => 'Chat ' . $creator->login . ' with ' . $profiles,
+            'title' => 'Chat with ' . $logins,
+            'profile_ids' => $prifileIds
         ]);
     }
 }
