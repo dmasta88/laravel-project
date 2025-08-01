@@ -5,8 +5,11 @@
     <h1 class="text-xl mb-4 text-center">{{ chat.title }}</h1>
     <div class="flex w-full flex-col mr-96">
       <div v-for="messageData in messages" v-if="messages"
-        :class="[messageData.is_owner ? 'bg-lime-100 self-end' : 'bg-gray-200 self-start', 'my-2 p-2 min-w-96 w-3/4 rounded-lg']">
-        <div class="text-gray-600">{{ messageData.profile.login }}</div>
+        :class="[messageData.is_owner ? 'bg-lime-100 self-end text-right' : 'bg-gray-200 self-start', 'my-2 p-2 min-w-96 w-3/4 rounded-lg']">
+        <div :class="[messageData.is_owner ? 'justify-end' : '', 'flex items-center my-1']">
+          <img :src="messageData.profile.avatar" class="h-5 mr-0.5 rounded-full">
+          <span class="text-gray-600">{{ messageData.profile.login }}</span>
+        </div>
         <div class="text-gray-700">{{ messageData.content }}</div>
         <div class="text-sm text-gray-400 mt-1">{{ messageData.published_at }}</div>
 

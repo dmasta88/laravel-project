@@ -6,6 +6,7 @@ use Exception;
 use App\Models\Post;
 use App\Models\Comment;
 use App\Services\PostService;
+use Illuminate\Http\Response;
 use App\Jobs\Post\PostLikedJob;
 use App\Mail\Post\LikedPostMail;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +14,7 @@ use App\Events\Post\PostLikedEvent;
 use App\Jobs\Post\PostCommentedJob;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use App\Jobs\Comment\CommentRepliedJob;
 use App\Mail\Comment\StoredCommentMail;
@@ -21,9 +23,9 @@ use App\Http\Resources\Post\PostResource;
 use App\Http\Requests\Post\IndexPostRequest;
 use App\Http\Requests\Post\StorePostRequest;
 use App\Http\Resources\Comment\CommentResource;
+use App\Http\Requests\Client\Post\RepostPostRequest;
 use App\Http\Requests\Client\Post\StoreCommentRequest;
 use App\Http\Requests\Client\Comment\IndexCommentRequest;
-use App\Http\Requests\Client\Post\RepostPostRequest;
 
 class PostController extends Controller
 {
@@ -37,6 +39,12 @@ class PostController extends Controller
         //$comments = CommentResource::collection($post->comments()->paginate(5));
         $post = PostResource::make($post)->resolve();
         return inertia('Client/Post/Show', compact('post'));
+    }
+    public function destroy(Post $post)
+    {
+        Gate::authorize('delete', $post);
+        $post->delete();
+        return response()->json(['message' => 'Post deleted']);
     }
     public function repost(RepostPostRequest $request)
     {

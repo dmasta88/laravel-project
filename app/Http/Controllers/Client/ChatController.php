@@ -9,9 +9,10 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\Chat\ChatResource;
-use App\Http\Requests\Client\Chat\StoreChatRequest;
 use App\Http\Resources\Message\MessageResource;
+use App\Http\Resources\Profile\ProfileResource;
 use App\Http\Requests\Message\StoreMessageRequest;
+use App\Http\Requests\Client\Chat\StoreChatRequest;
 
 class ChatController extends Controller
 {
@@ -43,8 +44,7 @@ class ChatController extends Controller
     }
     public function create()
     {
-        $profiles = Profile::all()->except(Auth::user()->profile->id);
-
+        $profiles = ProfileResource::collection(Profile::where('id', '!=', Auth::user()->profile->id)->get())->resolve();
         return Inertia::render('Client/Chat/Create', compact('profiles'));
     }
     public function storeMessage(Chat $chat, StoreMessageRequest $request)
