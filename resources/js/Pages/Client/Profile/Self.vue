@@ -1,6 +1,8 @@
 <template>
   <div class="w-1/3 mx-auto">
     <h1 class="text-center text-xl my-4 text-black">My profile</h1>
+    <img :src="profile.avatar" class="mx-auto rounded-full">
+
     <h3 class="text-center text-xl my-4 text-black">{{ profile.login }}</h3>
     <PostItem v-for="post in posts" :post="post"></PostItem>
   </div>

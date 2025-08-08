@@ -1,18 +1,33 @@
 <template>
-
-  <div class="w-1/3 mx-auto">
-    <div>
-      My user:{{ myProfile.login }}
-    </div>
-    <div>
-      <div class="text-center">
+  <div class="max-w-4xl mx-auto px-4 py-8">
+    <!-- Профиль -->
+    <div class="flex flex-col items-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ profile.login }}</h1>
+      <img :src="profile.avatar" class="mx-auto rounded-full">
+      <div class="flex flex-col sm:flex-row sm:items-center gap-4 mt-4">
         <Link :href="route('client.chats.store')" method="post" :data="{ profile_ids: [profile.id] }"
-          class="px-3 py-2 bg-blue-600 text-white" v-if="profile.id != myProfile.id">Send message</Link>
+          class="inline-flex items-center justify-center px-5 py-2.5 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+          v-if="profile.id != myProfile.id">
+        Send Message
+        </Link>
+        <a href="#">
+
+        </a>
+        <a href="#" @click.prevent="toggleFollow"
+          :class="[profile.is_followed ? ' bg-gray-600 text-white  hover:bg-gray-700 ' : ' bg-green-600 text-white  hover:bg-green-700 ', 'inline-flex items-center justify-center px-5 py-2.5 rounded-lg shadow transition']"
+          v-if="profile.id != myProfile.id">
+          <span>{{ profile.is_followed ? 'Unfollow' : 'Follow' }}</span>
+
+        </a>
       </div>
-      <InputError class="text-center mt-2" v-if="errors" :message="errors.title"></InputError>
+
+      <InputError class="mt-2 text-red-600" v-if="errors" :message="errors.title" />
     </div>
-    <h1 class="text-center text-xl my-4 text-black">{{ profile.login }}</h1>
-    <PostItem v-for="post in posts" :post="post"></PostItem>
+
+    <!-- Posts -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <PostItem v-for="post in posts" :key="post.id" :post="post" />
+    </div>
   </div>
 </template>
 
@@ -34,51 +49,24 @@ export default defineComponent({
   },
   layout: ClientLayout,
   props: {
-    // v-model
     posts: Array,
     profile: Object,
-    myProfile: Object,
     errors: Object
-  },
-  emits: {
-    // v-model event with validation
-    'update:modelValue': (value) => value !== null,
   },
   data() {
     return {
+      myProfile: this.$page.props.auth.user.profile,
     };
   },
-  computed: {
-    value: {
-      get() {
-        return this.modelValue;
-      },
-      set(value) {
-        this.$emit('update:modelValue', value);
-      },
-    },
-  },
-  watch: {
-    modelValue: {
-      async handler(_newValue, _oldValue) {
-        // do something
-      },
-      immediate: true
-    },
-  },
   beforeMount() {
-    console.log(this.profile)
-
-  },
-  mounted() {
-  },
-  updated() {
-  },
-  beforeUnmount() {
-    // stop the wacher on modelValue
-    this.$watch('modelValue', () => { }, {});
   },
   methods: {
+    toggleFollow() {
+      axios.post(route('client.profiles.follow.toggle', this.profile.id)).then(res => {
+        this.profile.is_followed = res.data.is_followed
+
+      })
+    }
   },
 });
 </script>

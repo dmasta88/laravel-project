@@ -6,6 +6,7 @@ use Exception;
 use App\Models\Post;
 use App\Models\Comment;
 use App\Services\PostService;
+use Illuminate\Http\Response;
 use App\Jobs\Post\PostLikedJob;
 use App\Mail\Post\LikedPostMail;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +14,7 @@ use App\Events\Post\PostLikedEvent;
 use App\Jobs\Post\PostCommentedJob;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use App\Jobs\Comment\CommentRepliedJob;
 use App\Mail\Comment\StoredCommentMail;
@@ -21,9 +23,11 @@ use App\Http\Resources\Post\PostResource;
 use App\Http\Requests\Post\IndexPostRequest;
 use App\Http\Requests\Post\StorePostRequest;
 use App\Http\Resources\Comment\CommentResource;
+use App\Http\Requests\Client\Post\RepostPostRequest;
 use App\Http\Requests\Client\Post\StoreCommentRequest;
 use App\Http\Requests\Client\Comment\IndexCommentRequest;
-use App\Http\Requests\Client\Post\RepostPostRequest;
+use App\Models\ProfileNotification;
+use App\Services\NotificationService;
 
 class PostController extends Controller
 {
@@ -35,8 +39,17 @@ class PostController extends Controller
     public function show(Post $post)
     {
         //$comments = CommentResource::collection($post->comments()->paginate(5));
+
+        $post->load(['profile', 'parent.profile', 'tags']);
+        // return PostResource::make($post);
         $post = PostResource::make($post)->resolve();
         return inertia('Client/Post/Show', compact('post'));
+    }
+    public function destroy(Post $post)
+    {
+        Gate::authorize('delete', $post);
+        $post->delete();
+        return response()->json(['message' => 'Post deleted']);
     }
     public function repost(RepostPostRequest $request)
     {
@@ -57,9 +70,13 @@ class PostController extends Controller
         $comment = $post->comments()->create($data);
         if ($data['parent_id']) {
             $parentComment = Comment::where(['id' => $data['parent_id']])->first();
+            NotificationService::create($parentComment);
             CommentRepliedJob::dispatch($comment, $parentComment, Auth::user())->onQueue('emails');
             //Mail::to($parentComment->user->email)->send(new RepliedCommentMail($comment, $parentComment, Auth::user()->profile));
         } else {
+            $notification = Auth::user()->profile->login . ' has commented your post';
+            $data = ['profile_id' => $post->profile->id, 'content' => $notification];
+            ProfileNotification::create($data);
             PostCommentedJob::dispatch($post, $comment)->onQueue('emails');
             //Mail::to($post->user)->send(new StoredCommentMail($post, $comment));
         }

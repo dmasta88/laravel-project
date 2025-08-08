@@ -15,8 +15,8 @@ class Category extends Model
     protected $guarded = [];
     use HasFactory;
     use SoftDeletes;
-    use HasLog;
-    use HasLogFile;
+    // use HasLog;
+    // use HasLogFile;
     use HasFilter;
     public function posts()
     {

@@ -12,7 +12,7 @@ class Tag extends Model
 {
     protected $guarded = [];
     use HasFactory;
-    use HasLog;
+    //use HasLog;
     use SoftDeletes;
     use HasFilter;
     public function posts()

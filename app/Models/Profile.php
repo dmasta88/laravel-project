@@ -3,12 +3,17 @@
 namespace App\Models;
 
 use App\Models\Traits\HasFilter;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Profile extends Model
 {
     use HasFilter;
     protected $guarded = [];
+    protected $withCount = ['notifications', 'notificationsnotread'];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -46,5 +51,27 @@ class Profile extends Model
     public function chats()
     {
         return $this->belongsToMany(Chat::class);
+    }
+    public function following(): BelongsToMany
+    {
+        //follower_id - от чьего имени показываем его подписчиков, тот кто вызывает это свойство модели
+        //following_id - это айди на кого он подписан
+        return $this->belongsToMany(Profile::class, 'follower_following', 'follower_id', 'following_id');
+    }
+    public function followers()
+    {
+        return $this->belongsToMany(Profile::class, 'follower_following', 'following_id', 'follower_id');
+    }
+    public function getIsFollowedAttribute()
+    {
+        return $this->followers->contains(Auth::user()->profile->id);
+    }
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(ProfileNotification::class, 'profile_id');
+    }
+    public function notificationsnotread(): HasMany
+    {
+        return $this->hasMany(ProfileNotification::class, 'profile_id')->whereNull('read_at');
     }
 }

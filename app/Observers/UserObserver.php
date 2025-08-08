@@ -15,7 +15,7 @@ class UserObserver
         Profile::firstOrCreate(['user_id' => $user->id], [
             'second_name' => fake()->lastName(),
             'third_name' => fake()->firstName(),
-            'avatar' => fake()->imageUrl(),
+            'avatar' => 'https://randomuser.me/api/portraits/men/' . fake()->numberBetween(1, 99) . '.jpg',
             'city' => fake()->city(),
             'login' => fake()->userName(),
         ]);

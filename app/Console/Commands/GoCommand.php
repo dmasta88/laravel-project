@@ -18,6 +18,7 @@ use App\Events\Log\StartLogEvent;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Events\Post\StoredPostEvent;
+use App\Models\ProfileNotification;
 
 class GoCommand extends Command
 {
@@ -40,9 +41,11 @@ class GoCommand extends Command
      */
     public function handle()
     {
-        $user = User::find(1);
-        $requests = $user->requests;
-        dd($requests);
+
+        for ($i = 1; $i <= 10; $i++) {
+            ProfileNotification::create(['profile_id' => 1, 'content' => 'Random Notification ' . $i]);
+        }
+
         // $events = $user->logEvents;
         // foreach ($events as $event) {
         //     dump($event);
