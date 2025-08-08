@@ -28,6 +28,11 @@ class PostResource extends JsonResource
             'parent_id' => $this->parent_id,
             //'parent' => $this->whenLoaded('parent', new PostResource($this->parent)),
             'parent' => $this->parent ? PostResource::make($this->parent)->resolve() : null,
+
+            // 'parent' => $this->whenLoaded('parent', fn() => new PostResource($this->parent)),
+            // 'profile' => $this->whenLoaded('profile', fn() => new ProfileResource($this->profile)),
+            // 'tags' => $this->whenLoaded('tags', fn() => implode(',', $this->tags->pluck('title')->toArray())),
+
             //'parent' => PostResource::make($this->parent)->resolve() ?? null,
             //'parent' => $this->whenLoaded('parent', fn() => (new PostResource($this->parent))->toArray($request)),
             'views' => $this->views,

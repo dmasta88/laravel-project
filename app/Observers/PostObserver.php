@@ -58,17 +58,17 @@ class PostObserver
     /**
      * Handle the Post "retrieved" event.
      */
-    public function retrieved(Post $post): void
-    {
-        $old = $post->getOriginal();
-        $data = [
-            'model' => 'post',
-            'event' => 'retrieved',
-            'old_attributes' => $old,
-            'new_attributes' => null
-        ];
-        Log::create($data);
-    }
+    // public function retrieved(Post $post): void
+    // {
+    //     $old = $post->getOriginal();
+    //     $data = [
+    //         'model' => 'post',
+    //         'event' => 'retrieved',
+    //         'old_attributes' => $old,
+    //         'new_attributes' => null
+    //     ];
+    //     Log::create($data);
+    // }
 
     /**
      * Handle the Post "restored" event.

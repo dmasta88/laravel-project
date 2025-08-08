@@ -26,6 +26,8 @@ use App\Http\Resources\Comment\CommentResource;
 use App\Http\Requests\Client\Post\RepostPostRequest;
 use App\Http\Requests\Client\Post\StoreCommentRequest;
 use App\Http\Requests\Client\Comment\IndexCommentRequest;
+use App\Models\ProfileNotification;
+use App\Services\NotificationService;
 
 class PostController extends Controller
 {
@@ -37,6 +39,9 @@ class PostController extends Controller
     public function show(Post $post)
     {
         //$comments = CommentResource::collection($post->comments()->paginate(5));
+
+        $post->load(['profile', 'parent.profile', 'tags']);
+        // return PostResource::make($post);
         $post = PostResource::make($post)->resolve();
         return inertia('Client/Post/Show', compact('post'));
     }
@@ -65,9 +70,13 @@ class PostController extends Controller
         $comment = $post->comments()->create($data);
         if ($data['parent_id']) {
             $parentComment = Comment::where(['id' => $data['parent_id']])->first();
+            NotificationService::create($parentComment);
             CommentRepliedJob::dispatch($comment, $parentComment, Auth::user())->onQueue('emails');
             //Mail::to($parentComment->user->email)->send(new RepliedCommentMail($comment, $parentComment, Auth::user()->profile));
         } else {
+            $notification = Auth::user()->profile->login . ' has commented your post';
+            $data = ['profile_id' => $post->profile->id, 'content' => $notification];
+            ProfileNotification::create($data);
             PostCommentedJob::dispatch($post, $comment)->onQueue('emails');
             //Mail::to($post->user)->send(new StoredCommentMail($post, $comment));
         }

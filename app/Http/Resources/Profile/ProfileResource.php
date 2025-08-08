@@ -21,7 +21,9 @@ class ProfileResource extends JsonResource
             'avatar' => $this->avatar,
             'city' => $this->city,
             'login' => $this->login,
-            'is_followed' => $this->is_followed
+            'is_followed' => $this->is_followed,
+            'notifications_count' => $this->notifications_count ? $this->notifications_count : null,
+            'notificationsnotread_count' => $this->notificationsnotread_count ? $this->notificationsnotread_count : null,
         ];
     }
 }

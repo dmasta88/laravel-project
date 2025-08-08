@@ -17,7 +17,12 @@ class Comment extends Model
     protected $withCount = ['whoLiked'];
     use HasFactory;
     use HasFilter;
+    // protected static function booted()
+    // {
+    //     static::created(function ($model) {
 
+    //     });
+    // }
     public function profile()
     {
         return $this->belongsTo(Profile::class);

@@ -6,11 +6,14 @@ use App\Models\Traits\HasFilter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Profile extends Model
 {
     use HasFilter;
     protected $guarded = [];
+    protected $withCount = ['notifications', 'notificationsnotread'];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -62,5 +65,13 @@ class Profile extends Model
     public function getIsFollowedAttribute()
     {
         return $this->followers->contains(Auth::user()->profile->id);
+    }
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(ProfileNotification::class, 'profile_id');
+    }
+    public function notificationsnotread(): HasMany
+    {
+        return $this->hasMany(ProfileNotification::class, 'profile_id')->whereNull('read_at');
     }
 }

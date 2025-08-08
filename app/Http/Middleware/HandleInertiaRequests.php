@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Resources\Notification\ProfileNotificationResource;
+use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -32,7 +34,8 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $request->user() ? UserResource::make($request->user())->resolve() : $request->user(),
+                'notifications' => $request->user() ? ProfileNotificationResource::collection($request->user()->profile->notifications->whereNull('read_at'))->resolve() : null
             ],
         ];
     }
