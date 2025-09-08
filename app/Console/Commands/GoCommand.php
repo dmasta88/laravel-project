@@ -15,10 +15,12 @@ use App\Models\Profile;
 use App\Models\Category;
 use Illuminate\Console\Command;
 use App\Events\Log\StartLogEvent;
+use App\Events\Message\StoredMessageEvent;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Events\Post\StoredPostEvent;
 use App\Models\ProfileNotification;
+use Symfony\Component\Mailer\Event\MessageEvent;
 
 class GoCommand extends Command
 {
@@ -42,10 +44,10 @@ class GoCommand extends Command
     public function handle()
     {
 
-        for ($i = 1; $i <= 10; $i++) {
-            ProfileNotification::create(['profile_id' => 1, 'content' => 'Random Notification ' . $i]);
-        }
-
+        // for ($i = 1; $i <= 10; $i++) {w
+        //     ProfileNotification::create(['profile_id' => 1, 'content' => 'Random Notification ' . $i]);
+        // }
+        //        StoredMessageEvent::dispatch();
         // $events = $user->logEvents;
         // foreach ($events as $event) {
         //     dump($event);

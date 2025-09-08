@@ -55,13 +55,23 @@ export default defineComponent({
       content: ''
     };
   },
+  computed: {
+
+  },
   watch: {
 
   },
   beforeMount() {
   },
+  created() {
+
+  },
+
   mounted() {
-    console.log(this.post)
+    Echo.private(`messagesSend.${this.chat.id}`)
+      .listen('.my-event', (e) => {
+        this.messages.push(e.message)
+      });
   },
   updated() {
   },
@@ -70,9 +80,18 @@ export default defineComponent({
   },
   methods: {
     storeMessage() {
-      axios.post(route('client.chats.messages.store', this.chat.id), { content: this.content }).then(
+      axios.post(
+        route('client.chats.messages.store', this.chat.id),
+        {
+          content: this.content
+        },
+        {
+          headers: {
+            'X-Socket-Id': window.Echo.socketId()
+          }
+        }
+      ).then(
         res => {
-          console.log(res.data)
           this.messages.push(res.data)
           this.content = ''
         }

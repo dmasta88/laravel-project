@@ -13,7 +13,7 @@
         <p class="text-gray-500 text-sm">{{ post.profile.login }}</p>
         <p class="text-gray-500 text-sm">{{ post.date_formatted }}</p>
       </div>
-      <div v-if="post.image_urls.length !== 0">
+      <div v-if="hasImage">
         <div v-for="image in post.image_urls">
           <img :src="image" class="m-1">
         </div>
@@ -35,7 +35,7 @@
         </div>
       </template>
     </div>
-    <div class="text-center my-5" v-if="post.comments_count > 0">
+    <div class="text-center my-5" v-if="hasComments">
 
       <PrimaryButton v-if="comments.active" href="#" @click="loadComments()">Comments ({{
         post.comments_count }})
@@ -43,8 +43,7 @@
 
     </div>
     <div class="text-center my-5">
-      <PrimaryButton href="#" v-if="comments.pagination.last_page > 0 && comments.pagination.next"
-        @click="loadComments()">
+      <PrimaryButton href="#" v-if="hasNextPage" @click="loadComments()">
         Load comments
       </PrimaryButton>
     </div>
@@ -75,6 +74,18 @@ export default defineComponent({
   props: {
     post: Object,
     // comments: Object
+  },
+  computed: {
+    hasImage() {
+      return this.post.image_urls.length !== 0
+    },
+    hasComments() {
+      return this.post.comments_count > 0
+    },
+    hasNextPage() {
+      return this.comments.pagination.last_page > 0 && this.comments.pagination.next
+    }
+
   },
   data() {
     return {

@@ -39,7 +39,7 @@ class PostController extends Controller
     public function show(Post $post)
     {
         //$comments = CommentResource::collection($post->comments()->paginate(5));
-
+        Gate::authorize('view', $post);
         $post->load(['profile', 'parent.profile', 'tags']);
         // return PostResource::make($post);
         $post = PostResource::make($post)->resolve();
@@ -70,14 +70,10 @@ class PostController extends Controller
         $comment = $post->comments()->create($data);
         if ($data['parent_id']) {
             $parentComment = Comment::where(['id' => $data['parent_id']])->first();
-            NotificationService::create($parentComment);
-            CommentRepliedJob::dispatch($comment, $parentComment, Auth::user())->onQueue('emails');
+            NotificationService::createdReplyComment($comment, $parentComment);
             //Mail::to($parentComment->user->email)->send(new RepliedCommentMail($comment, $parentComment, Auth::user()->profile));
         } else {
-            $notification = Auth::user()->profile->login . ' has commented your post';
-            $data = ['profile_id' => $post->profile->id, 'content' => $notification];
-            ProfileNotification::create($data);
-            PostCommentedJob::dispatch($post, $comment)->onQueue('emails');
+            NotificationService::createdComment($post, $comment);
             //Mail::to($post->user)->send(new StoredCommentMail($post, $comment));
         }
         return CommentResource::make($comment->fresh());
@@ -91,9 +87,8 @@ class PostController extends Controller
     public function toggleLike(Post $post)
     {
         if ($post->whoLiked()->toggle(Auth::user()->profile->id)['attached']) {
-            PostLikedEvent::dispatch($post, Auth::user());
-            //PostLikedJob::dispatch($post, Auth::user())->onQueue('emails');
-            // Mail::to($post->user)->send(new LikedPostMail($post, Auth::user()));
+            NotificationService::likedPost($post);
+            //            PostLikedJob::dispatch($post, Auth::user())->onQueue('emails');
         }
         return PostResource::make($post->fresh())->resolve();
         //return response(['is_liked' => count($res['attached']) > 0]);

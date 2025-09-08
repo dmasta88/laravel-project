@@ -6,9 +6,12 @@ use App\Models\Chat;
 use Inertia\Inertia;
 use App\Models\Profile;
 use Illuminate\Http\Request;
+use App\Mappers\Chat\ChatMapper;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Mappers\Profile\ProfileMapper;
 use App\Http\Resources\Chat\ChatResource;
+use App\Events\Message\StoredMessageEvent;
 use App\Http\Resources\Message\MessageResource;
 use App\Http\Resources\Profile\ProfileResource;
 use App\Http\Requests\Message\StoreMessageRequest;
@@ -18,10 +21,8 @@ class ChatController extends Controller
 {
     public function index()
     {
-        $chats = Auth::user()->profile->chats()->get();
-        $myChats = Auth::user()->profile->createdChats()->get();
-        return Inertia::render('Client/Chat/Index', compact('chats', 'myChats'));
-        //return ChatResource::collection(Chat::all())->resolve();
+
+        return Inertia::render('Client/Chat/Index', ChatMapper::index());
     }
     public function store(StoreChatRequest $request)
     {
@@ -39,18 +40,18 @@ class ChatController extends Controller
     }
     public function show(Chat $chat)
     {
-        $messages = MessageResource::collection($chat->messages->all())->resolve();
-        return Inertia::render('Client/Chat/Show', compact('chat', 'messages'));
+        return Inertia::render('Client/Chat/Show', ChatMapper::show($chat));
     }
     public function create()
     {
-        $profiles = ProfileResource::collection(Profile::where('id', '!=', Auth::user()->profile->id)->get())->resolve();
-        return Inertia::render('Client/Chat/Create', compact('profiles'));
+        return Inertia::render('Client/Chat/Create', ChatMapper::create());
     }
     public function storeMessage(Chat $chat, StoreMessageRequest $request)
     {
         $data = $request->validated();
         $message = $chat->messages()->create($data);
+        StoredMessageEvent::broadcast($message)->toOthers();
+        //broadcast(new StoredMessageEvent($message))->toOthers();
         return MessageResource::make($message)->resolve();
     }
 }

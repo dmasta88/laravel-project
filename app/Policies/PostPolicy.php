@@ -21,7 +21,7 @@ class PostPolicy
      */
     public function view(User $user, Post $post): bool
     {
-        return false;
+        return $post->profile_id === $user->profile->id;
     }
 
     /**

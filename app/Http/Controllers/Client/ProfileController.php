@@ -8,29 +8,25 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Post\PostResource;
 use App\Http\Resources\Profile\ProfileResource;
+use App\Mappers\Profile\ProfileMapper;
 use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
     public function index()
     {
-        $profiles = ProfileResource::collection(Profile::where('id', '!=', Auth::user()->profile->id)->get())->resolve();
-        return Inertia::render('Client/Profile/Index', compact('profiles'));
+        return Inertia::render('Client/Profile/Index', ProfileMapper::index());
     }
     public function self()
     {
-        $profile = Auth::user()->profile;
-        $posts = PostResource::collection(Auth::user()->profile->posts)->resolve();
-        return Inertia::render('Client/Profile/Self', compact('posts', 'profile'));
+        return Inertia::render('Client/Profile/Self', ProfileMapper::self());
     }
     public function show(Profile $profile)
     {
         if ($profile->id === Auth::user()->profile->id) {
             return Inertia::location(route('client.profiles.self'));
         }
-        $posts = PostResource::collection($profile->posts)->resolve();
-        $profile = ProfileResource::make($profile)->resolve();
-        return Inertia::render('Client/Profile/Show', compact('posts', 'profile'));
+        return Inertia::render('Client/Profile/Show', ProfileMapper::show($profile));
     }
     public function toggleFollow(Profile $profile)
     {

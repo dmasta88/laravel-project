@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Client\Notification\IndexNotificationRequest;
 use App\Http\Resources\Notification\ProfileNotificationResource;
+use App\Mappers\Notification\NotificationMapper;
 use Inertia\Inertia;
 
 class NotificationController extends Controller
@@ -21,13 +22,12 @@ class NotificationController extends Controller
         if ($request->wantsJson()) {
             return $notifications;
         }
-
         return Inertia::render('Client/Notification/Index', compact('notifications'));
     }
     public function show(ProfileNotification $notification)
     {
-        $notification = ProfileNotificationResource::make($notification)->resolve();
-        return Inertia::render('Client/Notification/Show', compact('notification'));
+
+        return Inertia::render('Client/Notification/Show', NotificationMapper::show($notification));
     }
     public function markAsRead(ProfileNotification $notification)
     {

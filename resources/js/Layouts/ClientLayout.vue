@@ -136,7 +136,12 @@ export default defineComponent({
 
   },
   mounted() {
-    //this.notifications.current_page = 1
+    Echo.private(`storedNotification.${this.myProfile.id}`)
+      .listen('.stored', (e) => {
+        console.log(123)
+        this.notifications.unshift(e.notification)
+        this.myProfile.notificationsnotread_count += 1
+      });
   },
   updated() {
   },
